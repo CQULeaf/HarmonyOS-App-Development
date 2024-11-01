@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "com.example.puzzle",
+    "patchVersionCode": 2000086,
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "entry",
+    "type": "hotreload"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "com.example.calculate_24_points",
+    "patchVersionCode": 2000067,
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "entry",
+    "type": "hotreload"
+  }
+}
