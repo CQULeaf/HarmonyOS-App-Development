@@ -1,0 +1,36 @@
+{
+  "color": [
+    {
+      "name": "white",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "background_color",
+      "value": "#D6E8EE"
+    },
+    {
+      "name": "main_color",
+      "value": "#001B48"
+    },
+    {
+      "name": "pay_color",
+      "value": "#FFE84826"
+    },
+    {
+      "name": "border_color",
+      "value": "#33182431"
+    }
+  ,{
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    }
+  ,{
+      "name": "themeColor",
+      "value": "#3fa9d2"
+    },
+    {
+      "name": "black",
+      "value": "#000000"
+    }
+  ]
+}

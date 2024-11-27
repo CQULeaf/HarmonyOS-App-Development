@@ -1,0 +1,11 @@
+{
+  "src": [
+    "pages/AppPage",
+    "pages/FrogetPage",
+    "pages/HelpPage",
+    "pages/LoginPage",
+    "pages/MainPage",
+    "pages/RegisterPage",
+    "pages/ShuiwuPage"
+  ]
+}

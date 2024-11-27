@@ -1,0 +1,50 @@
+{
+  "string": [
+    {
+      "name": "entry_desc",
+      "value": "description"
+    },
+    {
+      "name": "MainAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "MainAbility_label",
+      "value": "橙子记账"
+    },
+    {
+      "name": "edit_text",
+      "value": "编辑"
+    },
+    {
+      "name": "pay_text",
+      "value": "支出"
+    },
+    {
+      "name": "income_text",
+      "value": "收入"
+    },
+    {
+      "name": "yusuan",
+      "value": "预算"
+    },
+    {
+      "name": "count_text",
+      "value": "金额"
+    },
+    {
+      "name": "input_text",
+      "value": "请输入金额"
+    },
+    {
+      "name": "confirm_text",
+      "value": "确定"
+    }
+  ,{
+      "name": "meComponent_desc",
+      "value": "description"
+    },{
+      "name": "meComponent_label",
+      "value": "label"
+    }]
+}
