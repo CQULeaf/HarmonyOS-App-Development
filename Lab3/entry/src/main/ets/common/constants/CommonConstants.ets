@@ -38,7 +38,7 @@ export default class CommonConstants {
     'typeText TEXT, amount INTEGER, remark TEXT)',
     columns: ['id', 'accountType', 'typeText', 'remark']
   };
-  static readonly SEARCH_TEXT = '搜索';
+  static readonly SEARCH_TEXT = '输入关键字';
   static readonly TOAST_TEXT_1 = '账目类型不能为空';
   static readonly TOAST_TEXT_2 = '账目金额不为正整数';
   static readonly TOAST_TEXT_3 = '请选择账目日期';

@@ -3,6 +3,7 @@ import Comp_me from '../view/Comp_me';
 import Comp_graph from '../view/Comp_graph'
 import Comp_money from '../view/Comp_money'
 import Comp_account from '../view/test'
+import { DialogComponent } from '../view/DialogComponent';
 @Entry
 @Component
 struct TabContentExample {
@@ -41,6 +42,18 @@ struct TabContentExample {
   }
   @Builder TabBuilder2(index: number) {
     Column() {
+      Image(this.currentIndex === index ? $rawfile('add_select.png') : $rawfile('add.png'))
+        .width(40)
+        .height(40)
+        .margin({ bottom: 4 })
+        .objectFit(ImageFit.Contain)
+        .onClick(() => {
+          this.dialogController.open()
+        })
+    }.width('100%')
+  }
+  @Builder TabBuilder3(index: number) {
+    Column() {
       Image(this.currentIndex === index ? $rawfile('covery_select.png') : $rawfile('covery.png'))
         .width(24)
         .height(24)
@@ -53,7 +66,7 @@ struct TabContentExample {
         .lineHeight(14)
     }.width('100%')
   }
-  @Builder TabBuilder3(index: number) {
+  @Builder TabBuilder4(index: number) {
     Column() {
       Image(this.currentIndex === index ? $rawfile('me_select.png') : $rawfile('me.png'))
         .width(24)
@@ -80,12 +93,16 @@ struct TabContentExample {
         }.tabBar(this.TabBuilder1(1))
 
         TabContent() {
-          Comp_money()
+          Comp_me()
         }.tabBar(this.TabBuilder2(2))
 
         TabContent() {
-          Comp_me()
+          Comp_money()
         }.tabBar(this.TabBuilder3(3))
+
+        TabContent() {
+          Comp_me()
+        }.tabBar(this.TabBuilder4(4))
       }
       .vertical(false)
       .barHeight(56)

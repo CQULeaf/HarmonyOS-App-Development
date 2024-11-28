@@ -4,7 +4,6 @@ import CommonConstants from '../common/constants/CommonConstants';
 import { DialogComponent } from '../view/DialogComponent';
 import { ImageList } from '../viewmodel/AccountList';
 import Logger from '../common/utils/Logger';
-import promptAction from '@ohos.promptAction';
 
 @Component
 export default struct Comp_account {
@@ -101,17 +100,12 @@ export default struct Comp_account {
     Stack() {
       Column() {
         Row(){
-          // Image($rawfile('avatar.jpg'))
-          //   .height(`30vp`)
-          //   .margin({left:20})
           Text(`Money Up`)
             .height(`30vp`)
             .fontSize(25)
             .fontColor('#9B0000')
             .margin({top:'10vp', left:140})
         }.width('100%')
-
-
 
         Row() {
           Search({
@@ -129,128 +123,10 @@ export default struct Comp_account {
             .onChange((searchValue: string) => {
               this.searchText = searchValue;
             })
-            .onSubmit((searchValue: string) => {
-              if (searchValue === '') {
-                this.AccountTable.query(0, (result: AccountData[]) => {
-                  this.accounts = result;
-                }, true);
-              } else if(this.searchcheck === 1){
-                if(isNaN(Number(searchValue)) === false){
-                  this.AccountTable.query(Number(searchValue), (result: AccountData[]) => {
-                    this.accounts = result;
-                  }, false);
-                }else{
-                  promptAction.showToast({ message: '请输入数字！' })
-                }
-
-              }else if(this.searchcheck === 2){
-                this.AccountTable.queryDate(searchValue, (result: AccountData[]) => {
-                  this.accounts = result;
-                }, false);
-              }else if(this.searchcheck === 3){
-                this.AccountTable.queryremark(searchValue, (result: AccountData[]) => {
-                  this.accounts = result;
-                }, false);
-              }else if(this.searchcheck === 4){
-                if(searchValue === 'cy'){
-                  searchValue = '餐饮';
-                }else if(searchValue === 'gw'){
-                  searchValue = '购物';
-                }else if(searchValue === 'ry'){
-                  searchValue = '日用';
-                }else if(searchValue === 'jt'){
-                  searchValue = '交通';
-                }else if(searchValue === 'sc'){
-                  searchValue = '蔬菜';
-                }else if(searchValue === 'sg'){
-                  searchValue = '水果';
-                }else if(searchValue === 'ls'){
-                  searchValue = '零食';
-                }else if(searchValue === 'yd'){
-                  searchValue = '运动';
-                }else if(searchValue === 'yl'){
-                  searchValue = '娱乐';
-                }else if(searchValue === 'tx'){
-                  searchValue = '通讯';
-                }else if(searchValue === 'fs'){
-                  searchValue = '服饰';
-                }else if(searchValue === 'mr'){
-                  searchValue = '美容';
-                }else if(searchValue === 'zf'){
-                  searchValue = '住房';
-                }else if(searchValue === 'jtyj'){
-                  searchValue = '家庭用具';
-                }else if(searchValue === 'hz'){
-                  searchValue = '孩子';
-                }else if(searchValue === 'zb'){
-                  searchValue = '长辈';
-                }else if(searchValue === 'sj'){
-                  searchValue = '社交';
-                }else if(searchValue === 'lx'){
-                  searchValue = '旅行';
-                }else if(searchValue === 'yj'){
-                  searchValue = '烟酒';
-                }else if(searchValue === 'sm'){
-                  searchValue = '数码';
-                }else if(searchValue === 'qc'){
-                  searchValue = '汽车';
-                }else if(searchValue === 'yy'){
-                  searchValue = '医院';
-                }else if(searchValue === 'ts'){
-                  searchValue = '图书';
-                }else if(searchValue === 'xx'){
-                  searchValue = '学习';
-                }else if(searchValue === 'cw'){
-                  searchValue = '宠物';
-                }else if(searchValue === 'lj'){
-                  searchValue = '礼金';
-                }else if(searchValue === 'lw'){
-                  searchValue = '礼物';
-                }else if(searchValue === 'bg'){
-                  searchValue = '办公';
-                }else if(searchValue === 'wx'){
-                  searchValue = '维修';
-                }else if(searchValue === 'gy'){
-                  searchValue = '公益';
-                }else if(searchValue === 'cy'){
-                  searchValue = '彩票';
-                }else if(searchValue === 'qy'){
-                  searchValue = '亲友';
-                }else if(searchValue === 'kd'){
-                  searchValue = '快递';
-                }else if(searchValue === 'wm'){
-                  searchValue = '外卖';
-                }else if(searchValue === 'qtzc'){
-                  searchValue = '其他支出';
-                }else if(searchValue === 'gz'){
-                  searchValue = '工资';
-                }else if(searchValue === 'jz'){
-                  searchValue = '兼职';
-                }else if(searchValue === 'lc'){
-                  searchValue = '理财';
-                }else if(searchValue === 'jj'){
-                  searchValue = '奖金';
-                }else if(searchValue === 'fh'){
-                  searchValue = '分红';
-                }else if(searchValue === 'jxj'){
-                  searchValue = '奖学金';
-                }else if(searchValue === 'yysr'){
-                  searchValue = '营业收入';
-                }else if(searchValue === 'qtsr'){
-                  searchValue = '其他收入';
-                } else{
-                  promptAction.showToast({ message: '请输入正确的检字组合！' })
-                }
-                this.AccountTable.queryType(searchValue, (result: AccountData[]) => {
-                  this.accounts = result;
-                }, false);
-              }
-            })
         }
         .width(CommonConstants.FULL_WIDTH)
         .padding({ left: $r('app.float.edge_size_M'), right: $r('app.float.edge_size_M') })
         .margin({ top: ('0vp'), bottom: ('2vp') })
-
 
         Row() {
           // 以12小时制显示东八区的系统时间，精确到秒。
@@ -287,8 +163,6 @@ export default struct Comp_account {
         .width(CommonConstants.FULL_WIDTH)
         .justifyContent(FlexAlign.SpaceAround)
         .margin({ top:('5vp'), bottom: ('0vp') })
-
-
 
         Row() {
           List({ space: CommonConstants.FULL_SIZE, scroller: this.scrollerForList }) {
@@ -366,7 +240,6 @@ export default struct Comp_account {
       }
       .width(CommonConstants.FULL_WIDTH)
       .height(CommonConstants.FULL_HEIGHT)
-
 
       Button() {
         Image($rawfile('add.svg'))

@@ -1,16 +1,10 @@
 import router from '@ohos.router'
 @Component
 export default struct Comp_me {
-  private swiperController: SwiperController = new SwiperController()
-
   @State start: boolean = true
-  private fromStart: boolean = true
-  private step: number = 50
-  private loop: number = Infinity
   @State flag:boolean = false
   @StorageProp('PunchingDay') punching_day:number = 0
   @State showPunchingDay:number = this.punching_day
-  private src: string = "橙子记账3.2.0将在四天之后发布，将会新增生成个人报表的功能，开发者联系方式:18184760749"
   @StorageProp('CurrentUsername') username: string = ''
   build() {
     Column(){
@@ -26,7 +20,6 @@ export default struct Comp_me {
           .fontColor('#9B0000')
           .margin({ right:'30vp' })
       }.margin({ left:'0vp',top:'30vp',bottom:'10vp' })
-
 
       Row(){
         Column(){
@@ -93,7 +86,7 @@ export default struct Comp_me {
         }
       }.divider({
         strokeWidth: 1,
-        startMargin: 90,
+        startMargin: 10,
         endMargin: 10,
         color: '#000000'
       })
