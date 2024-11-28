@@ -22,3 +22,16 @@ export function userRegister<T>(username: string, password1: string, password2: 
     }
   })
 }
+
+export function userChangePw<T>(username: string, oldPassword: string, newPassword1: string, newPassword2: string) {
+  return request<T>({
+    url: '/user/changePassword',
+    method: 'post',
+    data: {
+      username,
+      oldPassword,
+      newPassword1,
+      newPassword2
+    }
+  })
+}

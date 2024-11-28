@@ -48,27 +48,6 @@ export default struct Comp_me {
       }.width('100%').justifyContent(FlexAlign.SpaceAround)
 
       List({ space: 1 }) {
-      //   ListItem() {
-      //     Row() {
-      //       Image($rawfile('geren.png'))
-      //         .width(40)
-      //         .height(40)
-      //         .margin(10)
-      //
-      //       Text('个人信息')
-      //         .fontSize(15)
-      //
-      //       Blank()
-      //         .layoutWeight(1)
-      //
-      //       Image($rawfile('enter.png'))
-      //         .width(30)
-      //         .height(30)
-      //         .margin(10)
-      //     }
-      //   }.onClick(() => {
-      //     router.pushUrl({ url: 'pages/BillPage' })
-      //   })
         ListItem() {
           Row() {
             Image($rawfile('mima.png'))
@@ -87,31 +66,9 @@ export default struct Comp_me {
               .height(30)
               .margin(10)
           }.onClick(() => {
-            router.pushUrl({ url: 'pages/FrogetPage' })
+            router.pushUrl({ url: 'pages/ChangePwPage' })
           })
         }
-
-        ListItem() {
-          Row() {
-            Image($rawfile('hl.png'))
-              .width(40)
-              .height(40)
-              .margin(10)
-
-            Text('汇率计算')
-              .fontSize(15)
-
-            Blank()
-              .layoutWeight(1)
-
-            Image($rawfile('enter.png'))
-              .width(30)
-              .height(30)
-              .margin(10)
-          }
-        }.onClick(() => {
-          router.pushUrl({ url: 'pages/HelpPage' })
-        })
 
         ListItem() {
           Row() {
