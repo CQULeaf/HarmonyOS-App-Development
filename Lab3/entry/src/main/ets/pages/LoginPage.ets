@@ -1,161 +1,128 @@
-import router from '@ohos.router'
-import prompt from '@ohos.promptAction';
-import CommonConstants from '../common/constants/CommonConstants';
-import UserTable from '../common/database/tables/UserTable';
-import UserData from '../viewmodel/UserData';
+import { router } from '@kit.ArkUI'
+import { userLogin } from '../api/user'
+
+interface ResponseUserLogin {
+  id: number;
+  username: string;
+  password: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Entry
 @Component
-struct Login {
-  @State myWidth: number = 650;
-  @State myHeight: number = 650;
-  @State top: number = -80;
-  // 标志位，true和false分别对应一组myWidth、myHeight值
-  @State flag: boolean = false;
-  private inputusername ='';
-  private inputpassword='';
-  @State isAccept:boolean = false
-  @State user: Array<UserData> = [];
-  @State newUser: UserData = { id: 0, username:'', password:'',realname:''};
-  private UserTable = new UserTable(() => {});
-  accept(newUser: UserData): void {
-    this.UserTable.query(newUser, (result:number|boolean) => {
-      if (result === -1) {
-        prompt.showToast({ message: '用户名未注册', bottom: CommonConstants.PROMPT_BOTTOM });
-      } else if (result === true) {
-        prompt.showToast({ message: '登录成功', bottom: CommonConstants.PROMPT_BOTTOM });
-        router.pushUrl({ url: 'pages/MainPage' });
-      } else if (result === false) {
-        prompt.showToast({ message: '用户名与密码不匹配', bottom: CommonConstants.PROMPT_BOTTOM });
+struct LoginPage {
+  private username: string = ''
+  private password: string = ''
+
+  async userLogin() {
+    try {
+      const res = await userLogin<ResponseUserLogin>(this.username, this.password)
+
+      console.log('登录成功:', res)
+      AppStorage.setOrCreate('CurrentUserId', res.id)
+      AppStorage.setOrCreate('CurrentUsername', res.username)
+
+      router.pushUrl({ url: 'pages/MainPage' })
+    } catch (error) {
+      // 处理不同类型的错误，给出不同的提示
+      console.error('登录请求错误', error)
+
+      // 根据错误类型定制弹窗提示
+      if (error.message && error.message.includes('用户名或密码错误')) {
+        // 用户名或密码错误
+        AlertDialog.show({
+          message: '用户名或密码错误，请重新输入'
+        })
+      } else if (error.message && error.message.includes('Network Error')) {
+        // 网络错误
+        AlertDialog.show({
+          message: '网络连接失败，请检查网络设置'
+        })
+      } else if (error.response && error.response.status === 404) {
+        // 服务器未找到
+        AlertDialog.show({
+          message: '服务器未找到，请稍后再试'
+        })
       } else {
-        prompt.showToast({ message: '?', bottom: CommonConstants.PROMPT_BOTTOM });
+        // 默认错误
+        AlertDialog.show({
+          message: '登录失败，请检查网络连接或稍后重试'
+        })
       }
-    });
+    }
   }
+
   build() {
     Column() {
-      Text('汤姆记账')
-        .fontWeight(60)
-        .fontSize(60)
-        .fontColor(Color.White)
-        .margin({top:30})
-      Image($rawfile('user.png'))
-        .width(150)
-        .height(150)
-        .margin({top:40,bottom:20})
-      TextInput({ placeholder:"账号"})
-        .width('90%')
-        .height(50)
-        .margin(20)
-        .type(InputType.Normal)
-        .onChange((value: string) => {
-          this.inputusername = value;
-        }).backgroundColor(Color.White)
-        .borderRadius(25)
+      Image($r('app.media.app_icon'))
+        .width('100%')
+        .height('35%')
+        .margin({ bottom: 20 })
 
-      TextInput({ placeholder:"密码"})
-        .width('90%')
-        .height(50)
-        .margin(20)
-        .type(InputType.Password)
-        .onChange((value: string) => {
-          this.inputpassword = value;
-        }).backgroundColor(Color.White)
-        .borderRadius(25)
-
-
-      Row() {
-        Text('还没有账号？去注册')
-          .fontSize(15)
-          .fontColor(Color.White)
-          .decoration({ type: TextDecorationType.Underline, color:(Color.White) })
-          .textAlign(TextAlign.Start)
+      Column() {
+        Text('欢迎使用收支记账本')
+          .fontSize(20)
+          .fontSize(25)
+          .fontColor('#fff80000')
+          .margin({ bottom: 30, top: 20 })
+        TextInput({ placeholder: '请输入用户名' })
+          .width(300)
+          .height(48)
+          .fontSize(16)
+          .padding({ left: 16, right: 16 })
+          .backgroundColor('#FFFFFF')
+          .margin({ bottom: 16 })
+          .onChange((value: string) => {
+            this.username = value
+          })
+        TextInput({ placeholder: '请输入密码' })
+          .width(300)
+          .height(48)
+          .fontSize(16)
+          .padding({ left: 16, right: 16 })
+          .backgroundColor('#FFFFFF')
+          .margin({ bottom: 16 })
+          .type(InputType.Password)
+          .onChange((value: string) => {
+            this.password = value
+          })
+        Button('登录')
+          .width(300)
+          .height(48)
+          .backgroundColor('#ff45d7ea')
+          .fontSize(16)
+          .fontColor('#FFFFFF')
+          .margin({ bottom: 16 })
           .onClick(() => {
+            console.log('登录')
+            this.userLogin()
+          })
+        Button('注册')
+          .width(300)
+          .height(48)
+          .backgroundColor('#ff17bc9b')
+          .fontSize(16)
+          .fontColor('#FFFFFF')
+          .margin({ bottom: 16 })
+          .onClick(() => {
+            console.log('注册')
             router.pushUrl({ url: 'pages/RegisterPage' })
           })
-        Blank(120);
-        Text('忘记密码')
-          .fontSize(15)
-          .fontColor(Color.White)
-          .decoration({ type: TextDecorationType.Underline, color:(Color.White) })
-          .textAlign(TextAlign.Start)
-          .onClick(() => {
-            router.pushUrl({ url: 'pages/FrogetPage' })
-          })
       }
-
-
-
-      Row(){
-        Checkbox()
-          .width(10)
-          // .margin({top:})
-          .animation({duration:1000, curve:Curve.EaseInOut})
-          .onChange((value) => {
-            this.isAccept = value
-          })
-        //一段文本中，有文本样式需要单独定制，text包裹span
-        Text(){
-          Span('我已阅读并同意').fontColor(Color.White)
-          Span('《XX隐私政策》').fontColor('#3274f6')
-          Span('《XX用户服务协议》').fontColor('#3274f6')
-          Span('未注册的手机号将自动创建账号').fontColor(Color.White)
-        }
-        .fontSize(12)
-        .fontColor('#666')
-        .lineHeight(20)
-      }
-      .alignItems(VerticalAlign.Top)
-      .margin({top : 3})
-
-
-
-
-
-
-
-
-
-
-      Button('登录',{type:ButtonType.Capsule})
-        .backgroundColor(Color.White)
-        .fontColor(Color.Black)
-        .width(200)
-        .height(55)
-        .fontSize(30)
-        .margin(30)
-        .borderRadius(30)
-        .onClick(() => {
-          if (this.inputpassword === ''||this.inputusername === '') {
-            prompt.showToast({ message: CommonConstants.TOAST_TEXT_4, bottom: CommonConstants.PROMPT_BOTTOM });
-          } else {
-            this.newUser.username=this.inputusername;
-            this.newUser.password=this.inputpassword;
-            this.accept(this.newUser);
-            prompt.showToast({ message: CommonConstants.TOAST_TEXT_5, bottom: CommonConstants.PROMPT_BOTTOM });
-          }
-        })
-
-      //底部居底blank()
-      Blank()
-      //底部，其他登录方式
-      Column(){
-        Text('其他登录方式')
-          .fontSize(14)
-          .height(22)
-          .margin({bottom:28})
-          .fontColor(Color.White)
-        Row(){
-          Image($r('app.media.jd_huawei')).width(34)
-          Image($r('app.media.we_chat')).width(34).fillColor('#69ab4a')
-          Image($r('app.media.weibo')).width(34).fillColor('#ca5a42')
-          Image($r('app.media.QQ')).width(34).fillColor('#68a8df')
-        }
-        .justifyContent(FlexAlign.SpaceAround)
-        .margin({bottom:30})
-        .width('100%')
-      }
-      .width('100%')
-    }.width('100%').height('100%').backgroundColor('#3ea8d1').padding(10)
+      .width('90%')
+      .height('50%')
+      .padding({ left: 10, right: 10 })
+      .borderRadius(10)
+      .shadow({
+        radius: 10,
+        color: '#000000',
+        offsetX: 4,
+        offsetY: 8
+      })
+    }
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#F1F3F5')
   }
-
 }

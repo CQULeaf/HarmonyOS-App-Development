@@ -1,89 +1,107 @@
-import router from '@ohos.router'
-import prompt from '@ohos.promptAction';
-import CommonConstants from '../common/constants/CommonConstants';
-import UserTable from '../common/database/tables/UserTable';
-import UserData from '../viewmodel/UserData';
+import { router } from '@kit.ArkUI'
+import { userRegister } from '../api/user'
+
+interface ResponseUserRegister {
+  id: number;
+  username: string;
+  password: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Entry
 @Component
-export struct Register {
-  private inputusername ='';
-  private inputpassword='';
-  @State user: Array<UserData> = [];
-  @State newUser: UserData = {
-    id: 0,
-    username: '',
-    password: '',
-    realname: ''
-  };
-  private UserTable = new UserTable(() => {});
-  accept(newUser: UserData): void {
-       this.UserTable.insertData(newUser, () => {});
+struct RegisterPage {
+  private username: string = ''
+  private password1: string = ''
+  private password2: string = ''
+
+  // 实现注册请求
+  async userRegister() {
+    try {
+      const res = await userRegister<ResponseUserRegister>(this.username, this.password1, this.password2)
+
+      console.log('注册成功:', res)
+      AlertDialog.show({
+        message: '注册成功，请登录'
+      })
+      router.pushUrl({ url: 'pages/LoginPage' })
+    } catch (error) {
+      console.error('注册请求错误', error)
+
+      if (error.message && error.message.includes('用户名已存在')) {
+        AlertDialog.show({
+          message: '用户名已存在, 请重新输入'
+        })
+      } else if (error.message && error.message.includes('两次密码输入不一致')) {
+        AlertDialog.show({
+          message: '两次密码输入不一致，请重新输入'
+        })
+      } else if (error.message && error.message.includes('Network Error')) {
+        AlertDialog.show({
+          message: '网络连接失败，请检查网络设置'
+        })
+      } else if (error.response && error.response.status === 404) {
+        AlertDialog.show({
+          message: '服务器未找到，请稍后再试'
+        })
+      } else {
+        AlertDialog.show({
+          message: '登录失败，请检查网络连接或稍后重试'
+        })
+      }
+    }
   }
 
   build() {
     Column() {
-      Image($rawfile('user.png'))
-        .height(150)
-        .width(150)
-        .margin({top:80,bottom:40})
-      Text("欢迎注册")
-        .fontSize(20)
-        .fontColor(Color.White)
-
-      TextInput({
-        placeholder:"请输入你的账号",
-      })
-        .width('90%')
-        .height(50)
-        .margin(20)
-        .borderRadius(0)
+      Text('注册您的专属账号').fontSize(28).margin({ bottom: 25 })
+      TextInput({ placeholder:'请输入用户名'})
         .type(InputType.Normal)
+        .height(48)
+        .width(300)
+        .fontSize(16)
+        .margin({ top: 16 })
         .onChange((value: string) => {
-          this.inputusername = value;
-        }).backgroundColor(Color.White)
-        .borderRadius(25)
-
-      TextInput({ placeholder:"请输入你的密码"})
-        .width('90%')
-        .height(50)
-        .margin(20)
-        .borderRadius(0)
+          this.username = value
+        })
+      TextInput({ placeholder:'请输入密码'})
         .type(InputType.Password)
+        .height(48)
+        .width(300)
+        .fontSize(16)
+        .margin({ top: 16 })
         .onChange((value: string) => {
-          this.inputpassword = value;
-        }).backgroundColor(Color.White)
-        .borderRadius(25)
-
-      Text('已有账号？去登录')
-        .fontSize(18)
-        .fontColor(Color.White)
-        .decoration({ type: TextDecorationType.Underline, color:(Color.White) })
-        .textAlign(TextAlign.Start)
-        .onClick(() => {
-          router.back();
+          this.password1 = value
         })
-      Button('注册',{type:ButtonType.Capsule})
-        .backgroundColor(Color.White)
-        .fontColor(Color.Black)
-        .width(200)
-        .height(55)
-        .fontSize(30)
-        .margin(30)
-        .borderRadius(30)
-        .onClick(() => {
-          if (this.inputpassword === ''||this.inputusername === '') {
-            prompt.showToast({ message: CommonConstants.TOAST_TEXT_4, bottom: CommonConstants.PROMPT_BOTTOM });
-          } else {
-            this.newUser.username = this.inputusername;
-            this.newUser.password = this.inputpassword;
-            this.accept(this.newUser);
-            prompt.showToast({ message: CommonConstants.TOAST_TEXT_5, bottom: CommonConstants.PROMPT_BOTTOM });
-            router.back();
-          }
+      TextInput({ placeholder:'请再次输入密码'})
+        .type(InputType.Password)
+        .height(48)
+        .width(300)
+        .fontSize(16)
+        .margin({ top: 16, bottom: 25 })
+        .onChange((value: string) => {
+          this.password2 = value
         })
-
-    }.width('100%').height('100%').backgroundColor('#3ea8d1')
-
+      // 已有账号，去登录
+      Row() {
+        Text('已有账号，去').fontSize(16)
+        Text('登录').fontSize(16).fontColor('#ff45d7ea').onClick(() => {
+          router.pushUrl({ url: 'pages/LoginPage' })
+        })
+      }
+      Button('确认注册')
+        .width(300)
+        .height(48)
+        .backgroundColor('#ff17bc9b')
+        .fontSize(16)
+        .fontColor('#FFFFFF')
+        .margin({ bottom: 16, top: 16 })
+        .onClick(() => {
+          this.userRegister()
+        })
+    }
+    .width('100%')
+    .padding(30)
   }
-
 }
