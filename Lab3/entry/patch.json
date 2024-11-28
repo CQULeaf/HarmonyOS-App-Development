@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "com.example.jizhangben",
+    "patchVersionCode": 2000011,
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "entry",
+    "type": "hotreload"
+  }
+}

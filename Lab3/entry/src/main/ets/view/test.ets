@@ -101,14 +101,14 @@ export default struct Comp_account {
     Stack() {
       Column() {
         Row(){
-          Image($rawfile('user.png'))
-            .height(`30vp`)
-            .margin({left:20})
-          Text(`汤姆记账`)
+          // Image($rawfile('avatar.jpg'))
+          //   .height(`30vp`)
+          //   .margin({left:20})
+          Text(`Money Up`)
             .height(`30vp`)
             .fontSize(25)
-            .fontColor(Color.White)
-            .margin({top:'10vp', left:100})
+            .fontColor('#9B0000')
+            .margin({top:'10vp', left:140})
         }.width('100%')
 
 

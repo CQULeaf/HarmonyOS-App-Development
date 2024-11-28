@@ -5,6 +5,7 @@
     "pages/LoginPage",
     "pages/MainPage",
     "pages/RegisterPage",
-    "pages/ShuiwuPage"
+    "pages/ShuiwuPage",
+    "pages/ForgetPage"
   ]
 }

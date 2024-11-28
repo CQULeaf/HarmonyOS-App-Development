@@ -34,16 +34,6 @@ struct LoginPage {
         AlertDialog.show({
           message: '用户名或密码错误，请重新输入'
         })
-      } else if (error.message && error.message.includes('Network Error')) {
-        // 网络错误
-        AlertDialog.show({
-          message: '网络连接失败，请检查网络设置'
-        })
-      } else if (error.response && error.response.status === 404) {
-        // 服务器未找到
-        AlertDialog.show({
-          message: '服务器未找到，请稍后再试'
-        })
       } else {
         // 默认错误
         AlertDialog.show({

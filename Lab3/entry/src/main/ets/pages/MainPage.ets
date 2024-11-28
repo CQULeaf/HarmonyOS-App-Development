@@ -18,7 +18,7 @@ struct TabContentExample {
         .height(24)
         .margin({ bottom: 4 })
         .objectFit(ImageFit.Contain)
-      Text(`主页`)
+      Text(`流水`)
         .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
         .fontSize(10)
         .fontWeight(500)
@@ -32,7 +32,7 @@ struct TabContentExample {
         .height(24)
         .margin({ bottom: 4 })
         .objectFit(ImageFit.Contain)
-      Text(`图表`)
+      Text(`报表`)
         .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
         .fontSize(10)
         .fontWeight(500)
@@ -46,7 +46,7 @@ struct TabContentExample {
         .height(24)
         .margin({ bottom: 4 })
         .objectFit(ImageFit.Contain)
-      Text(`发现`)
+      Text(`预算`)
         .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
         .fontSize(10)
         .fontWeight(500)
@@ -79,9 +79,9 @@ struct TabContentExample {
           Comp_graph()
         }.tabBar(this.TabBuilder1(1))
 
-        // TabContent() {
-        //   Comp_money()
-        // }.tabBar(this.TabBuilder2(2))
+        TabContent() {
+          Comp_money()
+        }.tabBar(this.TabBuilder2(2))
 
         TabContent() {
           Comp_me()
