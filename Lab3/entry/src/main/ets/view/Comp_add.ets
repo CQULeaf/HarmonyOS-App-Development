@@ -1,31 +1,51 @@
-import prompt from '@ohos.promptAction';
-import AccountData from '../viewmodel/AccountData';
 import CommonConstants from '../common/constants/CommonConstants';
-import { PayList, EarnList } from '../viewmodel/AccountList';
-export default interface AccountItem {
-  icon: Resource;
-  iconSelected: Resource;
-  accountType: number;
-  typeText: string;
+import { AccountItem, PayList, EarnList } from '../viewmodel/AccountList';
+import { recordAdd } from '../api/record';
+import { router } from '@kit.ArkUI';
+
+interface ResponseRecordAdd {
+  id: number;
+  username: string;
+  category: string;
+  amount: number;
+  description: string;
+  date: string;
+  type: number;
+  createdAt: string;
 }
 
+@Component
+export default struct Comp_add {
+  private amount: number = 0;
+  private description: string = '';
+  private type: number = 0;
+  private category: string = '';
+  @StorageProp('CurrentUsername') username: string = '';
 
-@CustomDialog
-export struct DialogComponent {
-  controller?: CustomDialogController;
-  @Link isInsert: boolean;
-  @Link newAccount: AccountData;
-  confirm?: (isInsert: boolean, newAccount: AccountData) => void;
-  private scroller: Scroller = new Scroller();
-  private inputAmount = '';
-  private inputAmount1 = '';
-  private date = '';
+  private date: string = '';
   @State payList: Array<AccountItem> = PayList;
   @State earnList: Array<AccountItem> = EarnList;
   @State bgColor: string = '';
+  @State Date1: string = "请选择日期";
   @State curIndex: number = 0;
   @State curType: string = '';
-  @State Date1: string = "请选择日期";
+
+  async recordAdd() {
+    try {
+      const res = await recordAdd<ResponseRecordAdd>(this.username, this.category, this.amount, this.description, this.date, this.type)
+      console.log('添加成功:', res)
+    } catch (error) {
+      console.error('添加请求错误', error)
+      AlertDialog.show({
+        message: '添加失败，请检查网络连接或稍后重试'
+      })
+    }
+  }
+
+  SelectTab(index: number) {
+    this.curIndex = index;
+  }
+
   @Builder
   TabBuilder(index: number) {
     Column() {
@@ -34,41 +54,28 @@ export struct DialogComponent {
         .fontColor(this.curIndex === index ? $r('app.color.main_color') : Color.Gray)
     }
     .width($r('app.float.component_size_MP'))
-    //.padding({ top: $r('app.float.edge_size_LM'), bottom: $r('app.float.edge_size_S') })
-    //.margin({ bottom: $r('app.float.edge_size_S') })
     .border(this.curIndex === index ? {
       width: { bottom: $r('app.float.border_size_M') },
       color: $r('app.color.main_color')
     } : { color: Color.White })
-  }
-
-  aboutToAppear() {
-    this.inputAmount = this.newAccount.amount.toString();
-    this.curIndex = this.newAccount.accountType;
-    this.curType = this.newAccount.typeText;
-    this.inputAmount1 = this.newAccount.remark;
+    .onClick(() => {
+      this.SelectTab(index);
+    })
   }
 
   selectAccount(item: AccountItem) {
-    this.newAccount.accountType = item.accountType;
-    this.newAccount.typeText = item.typeText;
+    this.type = item.accountType;
+    this.category = item.typeText;
     this.curType = item.typeText;
   }
 
   build() {
     Column() {
-      Image($rawfile('half.png'))
-        .width($r('app.float.component_size_L'))
-        .height($r('app.float.component_size_S'))
-        .onClick(() => {
-          this.controller?.close();
-        })
-
       Tabs({ barPosition: BarPosition.Start, index: this.curIndex }) {
         TabContent() {
           Column() {
             Row() {
-              ForEach(this.payList.slice(0, 5), (item: AccountItem) => {
+              ForEach(this.payList.slice(0, 4), (item: AccountItem) => {
                 Column() {
                   Image(this.curType === item.typeText ? item.iconSelected : item.icon)
                     .width($r('app.float.image_size'))
@@ -93,7 +100,7 @@ export struct DialogComponent {
               })
             }
             Row() {
-              ForEach(this.payList.slice(5, 10), (item: AccountItem) => {
+              ForEach(this.payList.slice(4, 8), (item: AccountItem) => {
                 Column() {
                   Image(this.curType === item.typeText ? item.iconSelected : item.icon)
                     .width($r('app.float.image_size'))
@@ -118,7 +125,7 @@ export struct DialogComponent {
               })
             }.margin({top:'12vp'})
             Row() {
-              ForEach(this.payList.slice(10, 15), (item: AccountItem) => {
+              ForEach(this.payList.slice(8, 12), (item: AccountItem) => {
                 Column() {
                   Image(this.curType === item.typeText ? item.iconSelected : item.icon)
                     .width($r('app.float.image_size'))
@@ -143,32 +150,7 @@ export struct DialogComponent {
               })
             }.margin({top:'12vp'})
             Row() {
-              ForEach(this.payList.slice(15, 20), (item: AccountItem) => {
-                Column() {
-                  Image(this.curType === item.typeText ? item.iconSelected : item.icon)
-                    .width($r('app.float.image_size'))
-                    .aspectRatio(CommonConstants.FULL_SIZE)
-                  Text(item.typeText)
-                    .fontSize('10vp')
-                    .fontColor( $r('app.color.main_color'))
-                }
-                .width('66vp')
-                .height('66vp')
-                .aspectRatio(CommonConstants.FULL_SIZE)
-                .padding({ top:'4vp' })
-                .margin({ left: $r('app.float.edge_size_M') })
-                .align(Alignment.TopStart)
-                .backgroundColor( $r('app.color.background_color'))
-                .borderWidth('2')
-                .borderColor(this.curType === item.typeText ? $r('app.color.main_color') : $r('app.color.background_color'))
-                .borderRadius($r('app.float.radius_size_S'))
-                .onClick(() => {
-                  this.selectAccount(item);
-                })
-              })
-            }.margin({top:'12vp'})
-            Row() {
-              ForEach(this.payList.slice(25, 30), (item: AccountItem) => {
+              ForEach(this.payList.slice(12, 16), (item: AccountItem) => {
                 Column() {
                   Image(this.curType === item.typeText ? item.iconSelected : item.icon)
                     .width($r('app.float.image_size'))
@@ -195,7 +177,6 @@ export struct DialogComponent {
           }
         }
         .tabBar(this.TabBuilder(0))
-        //.margin({ bottom: $r('app.float.edge_size_LP') })
 
         TabContent() {
           Column() {
@@ -256,10 +237,8 @@ export struct DialogComponent {
       .width(CommonConstants.FULL_WIDTH)
       .height(CommonConstants.TABS_HEIGHT)
       .onChange((index) => {
-        this.curIndex = index;
+        this.type = index;
       })
-
-
 
       Column() {
         Row({space:4}){
@@ -269,8 +248,7 @@ export struct DialogComponent {
             .fontColor(Color.Black)
 
           TextInput({
-            placeholder: '请输入金额',
-            text: this.newAccount.amount === 0 ? this.inputAmount : this.newAccount.amount.toString()
+            placeholder: '请输入金额'
           })
             .borderRadius(CommonConstants.MINIMUM_SIZE)
             .height('40vp')
@@ -280,7 +258,7 @@ export struct DialogComponent {
             .backgroundColor(Color.White)
             .type(InputType.Number)
             .onChange((value: string) => {
-              this.inputAmount = value;
+              this.amount = Number(value);
             })
         }
 
@@ -292,7 +270,6 @@ export struct DialogComponent {
 
           TextInput({
             placeholder: '请输入备注',
-            text: this.newAccount.remark === '' ? this.inputAmount1 : this.newAccount.remark
           })
             .borderRadius(CommonConstants.MINIMUM_SIZE)
             .height('40vp')
@@ -302,7 +279,7 @@ export struct DialogComponent {
             .backgroundColor(Color.White)
             .type(InputType.Normal)
             .onChange((value: string) => {
-              this.inputAmount1 = value;
+              this.description = value;
             })
         }
 
@@ -336,16 +313,10 @@ export struct DialogComponent {
               }
             });
           });
-
         }
-
       }
       .width(CommonConstants.FULL_WIDTH)
       .padding({ left: $r('app.float.edge_size_M'), right: $r('app.float.edge_size_M') })
-
-      Column() {
-
-      }
 
       Column() {
         Button() {
@@ -357,25 +328,8 @@ export struct DialogComponent {
         .width(CommonConstants.FULL_WIDTH)
         .height($r('app.float.component_size_M'))
         .onClick(() => {
-          if (this.newAccount.typeText === '' || this.curIndex !== this.newAccount.accountType) {
-            prompt.showToast({ message: CommonConstants.TOAST_TEXT_1, bottom: CommonConstants.PROMPT_BOTTOM });
-          } else {
-            let regex: RegExp = new RegExp('[1-9][0-9]*');
-            let matchValue: Array<string> | null = this.inputAmount.match(regex);
-            if (matchValue !== null && matchValue[0] === this.inputAmount) {
-              if(this.date !== ''){
-                this.newAccount.amount = Number(this.inputAmount);
-                this.newAccount.remark = this.inputAmount1;
-                this.newAccount.Date = this.date;
-                this.confirm && this.confirm(this.isInsert, this.newAccount);
-                this.controller?.close();
-              }else{
-                prompt.showToast({ message: CommonConstants.TOAST_TEXT_3, bottom: CommonConstants.PROMPT_BOTTOM });
-              }
-            } else {
-              prompt.showToast({ message: CommonConstants.TOAST_TEXT_2, bottom: CommonConstants.PROMPT_BOTTOM });
-            }
-          }
+          this.recordAdd();
+          router.pushUrl({ url: 'pages/MainPage' })
         })
       }
       .layoutWeight(CommonConstants.FULL_SIZE)

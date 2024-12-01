@@ -1,5 +1,4 @@
-import sms from '@ohos.telephony.sms'
-export default interface AccountItem {
+export interface AccountItem {
   icon: Resource;
   iconSelected: Resource;
   accountType: number;
@@ -31,12 +30,6 @@ export const PayList: Array<AccountItem> = [
     accountType: 0,
     typeText: '交通'
   },
-  {
-    icon: $rawfile('sc.png'),
-    iconSelected: $rawfile('sc.png'),
-    accountType: 0,
-    typeText: '蔬菜'
-  },
 
 
   {
@@ -52,12 +45,6 @@ export const PayList: Array<AccountItem> = [
     typeText: '零食'
   },
   {
-    icon: $rawfile('yd.png'),
-    iconSelected: $rawfile('yd.png'),
-    accountType: 0,
-    typeText: '运动'
-  },
-  {
     icon: $rawfile('yl.png'),
     iconSelected: $rawfile('yl.png'),
     accountType: 0,
@@ -69,7 +56,6 @@ export const PayList: Array<AccountItem> = [
     accountType: 0,
     typeText: '通讯'
   },
-
 
   {
     icon: $rawfile('fs.png'),
@@ -96,97 +82,11 @@ export const PayList: Array<AccountItem> = [
     typeText: '旅行'
   },
 
-
-
   {
-    icon: $rawfile('zb.png'),
-    iconSelected: $rawfile('zb.png'),
+    icon: $rawfile('qy.png'),
+    iconSelected: $rawfile('qy.png'),
     accountType: 0,
-    typeText: '长辈'
-  },
-  {
-    icon: $rawfile('sj.png'),
-    iconSelected: $rawfile('sj.png'),
-    accountType: 0,
-    typeText: '社交'
-  },
-
-  {
-    icon: $rawfile('yj.png'),
-    iconSelected: $rawfile('yj.png'),
-    accountType: 0,
-    typeText: '烟酒'
-  },
-  {
-    icon: $rawfile('sm.png'),
-    iconSelected: $rawfile('sm.png'),
-    accountType: 0,
-    typeText: '数码'
-  },
-
-
-  {
-    icon: $rawfile('qc.png'),
-    iconSelected: $rawfile('qc.png'),
-    accountType: 0,
-    typeText: '汽车'
-  },
-  {
-    icon: $rawfile('yy.png'),
-    iconSelected: $rawfile('yy.png'),
-    accountType: 0,
-    typeText: '医院'
-  },
-  {
-    icon: $rawfile('ts.png'),
-    iconSelected: $rawfile('ts.png'),
-    accountType: 0,
-    typeText: '图书'
-  },
-  {
-    icon: $rawfile('xx.png'),
-    iconSelected: $rawfile('xx.png'),
-    accountType: 0,
-    typeText: '学习'
-  },
-  {
-    icon: $rawfile('cw.png'),
-    iconSelected: $rawfile('cw.png'),
-    accountType: 0,
-    typeText: '宠物'
-  },
-
-
-
-  {
-    icon: $rawfile('lj.png'),
-    iconSelected: $rawfile('lj.png'),
-    accountType: 0,
-    typeText: '礼金'
-  },
-  {
-    icon: $rawfile('lw.png'),
-    iconSelected: $rawfile('lw.png'),
-    accountType: 0,
-    typeText: '礼物'
-  },
-  {
-    icon: $rawfile('bg.png'),
-    iconSelected: $rawfile('bg.png'),
-    accountType: 0,
-    typeText: '办公'
-  },
-  {
-    icon: $rawfile('wx.png'),
-    iconSelected: $rawfile('wx.png'),
-    accountType: 0,
-    typeText: '维修'
-  },
-  {
-    icon: $rawfile('wm.png'),
-    iconSelected: $rawfile('wm.png'),
-    accountType: 0,
-    typeText: '外卖'
+    typeText: '亲友'
   },
   {
     icon: $rawfile('kd.png'),
@@ -195,67 +95,17 @@ export const PayList: Array<AccountItem> = [
     typeText: '快递'
   },
   {
-    icon: $rawfile('qtzc.png'),
-    iconSelected: $rawfile('qtzc.png'),
-    accountType: 0,
-    typeText: '其他支出'
-  },
-  {
     icon: $rawfile('gy.png'),
     iconSelected: $rawfile('gy.png'),
     accountType: 0,
     typeText: '公益'
   },
-
-
   {
-    icon: $rawfile('cp.png'),
-    iconSelected: $rawfile('cp.png'),
+    icon: $rawfile('qt.png'),
+    iconSelected: $rawfile('qt.png'),
     accountType: 0,
-    typeText: '彩票'
+    typeText: '其他支出'
   },
-  {
-    icon: $rawfile('qy.png'),
-    iconSelected: $rawfile('qy.png'),
-    accountType: 0,
-    typeText: '亲友'
-  },
-
-
-
-
-
-  // {
-  //   icon: $rawfile(''),
-  //   iconSelected: $rawfile(''),
-  //   accountType: 0,
-  //   typeText: ''
-  // },
-  // {
-  //   icon: $rawfile(''),
-  //   iconSelected: $rawfile(''),
-  //   accountType: 0,
-  //   typeText: ''
-  // },
-  // {
-  //   icon: $rawfile(''),
-  //   iconSelected: $rawfile(''),
-  //   accountType: 0,
-  //   typeText: ''
-  // },
-  // {
-  //   icon: $rawfile(''),
-  //   iconSelected: $rawfile(''),
-  //   accountType: 0,
-  //   typeText: ''
-  // },
-  // {
-  //   icon: $rawfile(''),
-  //   iconSelected: $rawfile(''),
-  //   accountType: 0,
-  //   typeText: ''
-  // },
-
 ]
 
 export const EarnList: Array<AccountItem> = [
@@ -316,44 +166,21 @@ export const ImageList: Record<string,Resource> = {
   '购物': $rawfile('gw.png'),
   '日用': $rawfile('ry.png'),
   '交通': $rawfile('jt.png'),
-  '蔬菜': $rawfile('sc.png'),
 
   '水果': $rawfile('sg.png'),
   '零食': $rawfile('ls.png'),
-  '运动': $rawfile('yd.png'),
   '娱乐': $rawfile('yl.png'),
   '通讯': $rawfile('tx.png'),
 
   '服饰': $rawfile('fs.png'),
   '美容': $rawfile('mr.png'),
   '住房': $rawfile('zf.png'),
-  '家庭用具': $rawfile('jtyj.png'),
-  '孩子': $rawfile('hz.png'),
-
-  '长辈': $rawfile('zb.png'),
-  '社交': $rawfile('sj.png'),
   '旅行': $rawfile('lx.png'),
-  '烟酒': $rawfile('yj.png'),
-  '数码': $rawfile('sm.png'),
 
-  '汽车': $rawfile('qc.png'),
-  '医院': $rawfile('yy.png'),
-  '图书': $rawfile('ts.png'),
-  '学习': $rawfile('xx.png'),
-  '宠物': $rawfile('cw.png'),
-
-  '礼金': $rawfile('lj.png'),
-  '礼物': $rawfile('lw.png'),
-  '办公': $rawfile('bg.png'),
-  '维修': $rawfile('wx.png'),
-  '公益': $rawfile('gy.png'),
-
-  '彩票': $rawfile('cy.png'),
   '亲友': $rawfile('qy.png'),
   '快递': $rawfile('kd.png'),
-  '外卖': $rawfile('wm.png'),
-  '其他支出': $rawfile('qtzc.png'),
-
+  '公益': $rawfile('gy.png'),
+  '其他支出': $rawfile('qt.png'),
 
 
   '工资': $rawfile('gz.png'),

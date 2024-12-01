@@ -1,9 +1,8 @@
 import Comp_me from '../view/Comp_me';
-// import Comp_account from '../view/Comp_account'
-import Comp_graph from '../view/Comp_graph'
-import Comp_money from '../view/Comp_money'
-import Comp_account from '../view/test'
-import { DialogComponent } from '../view/DialogComponent';
+// import Comp_graph from '../view/Comp_graph'
+// import Comp_money from '../view/Comp_money'
+import Comp_add from '../view/Comp_add'
+import Comp_account from '../view/Comp_account'
 @Entry
 @Component
 struct TabContentExample {
@@ -47,9 +46,6 @@ struct TabContentExample {
         .height(40)
         .margin({ bottom: 4 })
         .objectFit(ImageFit.Contain)
-        .onClick(() => {
-          this.dialogController.open()
-        })
     }.width('100%')
   }
   @Builder TabBuilder3(index: number) {
@@ -89,15 +85,15 @@ struct TabContentExample {
         }.tabBar(this.TabBuilder0(0))
 
         TabContent() {
-          Comp_graph()
+          Comp_me()
         }.tabBar(this.TabBuilder1(1))
 
         TabContent() {
-          Comp_me()
+          Comp_add()
         }.tabBar(this.TabBuilder2(2))
 
         TabContent() {
-          Comp_money()
+          Comp_me()
         }.tabBar(this.TabBuilder3(3))
 
         TabContent() {

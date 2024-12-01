@@ -13,6 +13,7 @@ export default struct Comp_me {
           .width('60vp')
           .height('60vp')
           .margin({ right:'50vp'})
+          .borderRadius('30vp')
 
         Text(this.username)
           .height('60vp')
