@@ -1,8 +1,8 @@
 import Comp_me from '../view/Comp_me';
-// import Comp_graph from '../view/Comp_graph'
-// import Comp_money from '../view/Comp_money'
 import Comp_add from '../view/Comp_add'
 import Comp_account from '../view/Comp_account'
+import Comp_graph from '../view/Comp_graph';
+
 @Entry
 @Component
 struct TabContentExample {
@@ -85,7 +85,7 @@ struct TabContentExample {
         }.tabBar(this.TabBuilder0(0))
 
         TabContent() {
-          Comp_me()
+          Comp_graph()
         }.tabBar(this.TabBuilder1(1))
 
         TabContent() {

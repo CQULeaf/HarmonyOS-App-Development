@@ -26,6 +26,8 @@ export default struct Comp_account {
 
   @State total_out: number = 0;
   @State total_in: number = 0;
+  @State totalCount: number = 0;
+  @State totalDays: number = 0;
 
   @State searchText: string = '';
   @State searchcheck: number= 3;
@@ -49,19 +51,38 @@ export default struct Comp_account {
     try {
       const response = await recordList<ResponseRecordList>(this.username);
       this.accounts = response;
+      console.log('查询成功:', response);
       this.total_in = 0;
       this.total_out = 0;
+      // 用于存储不同的记账日期
+      const uniqueDates = new Set<string>();
+
       for (let i = 0; i < this.accounts.length; i++) {
         if (this.accounts[i].type === 0) {
           this.total_out = this.total_out + this.accounts[i].amount;
         } else {
           this.total_in = this.total_in + this.accounts[i].amount;
         }
+
+        // 提取日期部分并加入 uniqueDates 中去重
+        const dateStr = new Date(this.accounts[i].date).toISOString().split('T')[0]; // 获取年月日部分
+        uniqueDates.add(dateStr);
       }
       // 对账单进行排序
       this.accounts.sort((a, b) => {
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       });
+
+      // 记账总笔数
+      this.totalCount = this.accounts.length;
+
+      // 记账总天数
+      this.totalDays = uniqueDates.size;
+      console.log('记账总天数:', this.totalDays);
+
+      AppStorage.setOrCreate('totalCount', this.totalCount);
+      AppStorage.setOrCreate('totalDays', this.totalDays);
+      AppStorage.setOrCreate('accountList', this.accounts);
     } catch (error) {
       console.log(error);
     }
@@ -127,7 +148,6 @@ export default struct Comp_account {
           //     .fontSize(20)
           //     .height($r('app.float.component_size_SP'))
           // }.margin({ left: ('12vp') })
-
           Column() {
             Text(`收入`)
               .height($r('app.float.component_size_SP'))

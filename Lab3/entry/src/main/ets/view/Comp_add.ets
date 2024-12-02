@@ -9,7 +9,7 @@ interface ResponseRecordAdd {
   category: string;
   amount: number;
   description: string;
-  date: string;
+  date: Date;
   type: number;
   createdAt: string;
 }
@@ -324,7 +324,7 @@ export default struct Comp_add {
             .fontSize($r('app.float.font_size_M'))
             .fontColor(Color.White)
         }
-        .backgroundColor($r('app.color.themeColor'))
+        .backgroundColor('#739353')
         .width(CommonConstants.FULL_WIDTH)
         .height($r('app.float.component_size_M'))
         .onClick(() => {

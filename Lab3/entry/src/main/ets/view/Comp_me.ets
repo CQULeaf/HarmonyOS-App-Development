@@ -3,9 +3,9 @@ import router from '@ohos.router'
 export default struct Comp_me {
   @State start: boolean = true
   @State flag:boolean = false
-  @StorageProp('PunchingDay') punching_day:number = 0
-  @State showPunchingDay:number = this.punching_day
   @StorageProp('CurrentUsername') username: string = ''
+  @StorageProp('totalDays') totalDays: number = 0
+  @StorageProp('totalCount') totalCount: number = 0
   build() {
     Column(){
       Row() {
@@ -24,7 +24,7 @@ export default struct Comp_me {
 
       Row(){
         Column(){
-          Text('3')
+          Text(this.totalCount.toString())
             .fontSize(40)
             .fontWeight(FontWeight.Bold)
           Text('记账笔数')
@@ -32,7 +32,7 @@ export default struct Comp_me {
             .fontWeight(FontWeight.Normal)
         }
         Column(){
-          Text('5')
+          Text(this.totalDays.toString())
             .fontSize(40)
             .fontWeight(FontWeight.Bold)
           Text('记账天数')

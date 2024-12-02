@@ -1,7 +1,7 @@
 {
   "app": {
     "bundleName": "com.example.jizhangben",
-    "patchVersionCode": 2000015,
+    "patchVersionCode": 2000017,
     "versionCode": 1000000
   },
   "module": {
