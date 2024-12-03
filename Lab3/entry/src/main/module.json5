@@ -9,9 +9,21 @@
       "tablet",
       "2in1"
     ],
-    "requestPermissions": [{
+    "requestPermissions": [
+      {
       "name": "ohos.permission.INTERNET"
-    }],
+      },
+      {
+        "name": "ohos.permission.MICROPHONE",
+        "reason": "$string:voice_reason",
+        "usedScene": {
+          "abilities": [
+            "FormAbility"
+          ],
+          "when": "always"
+        }
+      }
+    ],
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",

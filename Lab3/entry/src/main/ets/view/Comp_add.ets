@@ -2,6 +2,10 @@ import CommonConstants from '../common/constants/CommonConstants';
 import { AccountItem, PayList, EarnList } from '../viewmodel/AccountList';
 import { recordAdd } from '../api/record';
 import { router } from '@kit.ArkUI';
+import { PermissionManager } from '../utils/PermissionMananger'
+import { Permissions } from '@kit.AbilityKit'
+import SpeechRecognizerManager from '../utils/SpeechRecognizerManager'
+
 
 interface ResponseRecordAdd {
   id: number;
@@ -67,6 +71,28 @@ export default struct Comp_add {
     this.type = item.accountType;
     this.category = item.typeText;
     this.curType = item.typeText;
+  }
+
+  @State text: string = '语音识别测试';
+  // 1 申请权限
+  fn1 = async () => {
+    // 准备好需要申请的权限 麦克风权限
+    const permissions: Permissions[] = ["ohos.permission.MICROPHONE"]
+    // 检查是否拥有权限
+    const isPermission = await PermissionManager.checkPermission(permissions)
+    console.log("是否有权限", isPermission)
+    if (!isPermission) {
+      //   如果没权限，就主动申请
+      PermissionManager.requestPermission(permissions)
+    }
+  }
+  // 2 实时语音识别
+  fn2 = () => {
+    console.log("实时语音识别")
+    SpeechRecognizerManager.init(res => {
+      console.log("实时语音识别", JSON.stringify(res))
+      this.text = res.result
+    })
   }
 
   build() {

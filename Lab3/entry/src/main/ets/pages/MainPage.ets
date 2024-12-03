@@ -27,6 +27,20 @@ struct TabContentExample {
   }
   @Builder TabBuilder1(index: number) {
     Column() {
+      Image(this.currentIndex === index ? $rawfile('add_select.png') : $rawfile('add.png'))
+        .width(24)
+        .height(24)
+        .margin({ bottom: 4 })
+        .objectFit(ImageFit.Contain)
+      Text(`记账`)
+        .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
+        .fontSize(10)
+        .fontWeight(500)
+        .lineHeight(14)
+    }.width('100%')
+  }
+  @Builder TabBuilder2(index: number) {
+    Column() {
       Image(this.currentIndex === index ? $rawfile('graph_select.png') : $rawfile('graph.png'))
         .width(24)
         .height(24)
@@ -39,30 +53,7 @@ struct TabContentExample {
         .lineHeight(14)
     }.width('100%')
   }
-  @Builder TabBuilder2(index: number) {
-    Column() {
-      Image(this.currentIndex === index ? $rawfile('add_select.png') : $rawfile('add.png'))
-        .width(40)
-        .height(40)
-        .margin({ bottom: 4 })
-        .objectFit(ImageFit.Contain)
-    }.width('100%')
-  }
   @Builder TabBuilder3(index: number) {
-    Column() {
-      Image(this.currentIndex === index ? $rawfile('covery_select.png') : $rawfile('covery.png'))
-        .width(24)
-        .height(24)
-        .margin({ bottom: 4 })
-        .objectFit(ImageFit.Contain)
-      Text(`预算`)
-        .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
-        .fontSize(10)
-        .fontWeight(500)
-        .lineHeight(14)
-    }.width('100%')
-  }
-  @Builder TabBuilder4(index: number) {
     Column() {
       Image(this.currentIndex === index ? $rawfile('me_select.png') : $rawfile('me.png'))
         .width(24)
@@ -85,20 +76,16 @@ struct TabContentExample {
         }.tabBar(this.TabBuilder0(0))
 
         TabContent() {
-          Comp_graph()
+          Comp_add()
         }.tabBar(this.TabBuilder1(1))
 
         TabContent() {
-          Comp_add()
+          Comp_graph()
         }.tabBar(this.TabBuilder2(2))
 
         TabContent() {
           Comp_me()
         }.tabBar(this.TabBuilder3(3))
-
-        TabContent() {
-          Comp_me()
-        }.tabBar(this.TabBuilder4(4))
       }
       .vertical(false)
       .barHeight(56)

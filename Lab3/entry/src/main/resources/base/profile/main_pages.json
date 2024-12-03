@@ -1,10 +1,8 @@
 {
   "src": [
-    "pages/AppPage",
     "pages/LoginPage",
     "pages/MainPage",
     "pages/RegisterPage",
-    "pages/ShuiwuPage",
     "pages/ChangePwPage"
   ]
 }

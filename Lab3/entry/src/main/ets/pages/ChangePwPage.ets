@@ -84,8 +84,8 @@ export struct ChangePwPage {
         }).backgroundColor(Color.White)
 
       Button('确认修改',{type:ButtonType.Capsule})
-        .backgroundColor(Color.White)
-        .fontColor(Color.Black)
+        .backgroundColor('#739353')
+        .fontColor(Color.White)
         .width(200)
         .height(55)
         .fontSize(30)

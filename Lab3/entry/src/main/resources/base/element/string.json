@@ -46,5 +46,9 @@
     },{
       "name": "meComponent_label",
       "value": "label"
+    },
+    {
+      "name": "voice_reason",
+      "value": "用于获取用户的录音"
     }]
 }

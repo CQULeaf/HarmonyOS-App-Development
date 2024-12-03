@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <script src="./echarts.min.js"></script>
+    <style>
+        *{
+     padding:0;
+     margin:0
+    }
+    body,html{
+       height:100%;
+       width:100%
+    }
+    #container{
+       height:100%;
+       width:100%
+    }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+</body>
+<script>
+    const container = document.getElementById('container')
+    let myChart = echarts.init(container);
+
+    function setOption(option){
+         myChart?.clear();
+         myChart?.setOption(option)
+    }
+</script>
+</html>

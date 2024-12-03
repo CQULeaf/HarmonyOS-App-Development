@@ -1,6 +1,5 @@
 import CommonConstants from '../common/constants/CommonConstants';
 import { ImageList } from '../viewmodel/AccountList';
-// import { AccountItem } from '../viewmodel/AccountList';
 import { recordDelete, recordList } from '../api/record';
 
 interface ResponseRecordList extends Array<AccountData> {}
@@ -30,7 +29,7 @@ export default struct Comp_account {
   @State totalDays: number = 0;
 
   @State searchText: string = '';
-  @State searchcheck: number= 3;
+
   @State index: number = -1;
   @State accounts: Array<AccountData> = [];
 
@@ -52,10 +51,33 @@ export default struct Comp_account {
       const response = await recordList<ResponseRecordList>(this.username);
       this.accounts = response;
       console.log('查询成功:', response);
+
       this.total_in = 0;
       this.total_out = 0;
+
       // 用于存储不同的记账日期
       const uniqueDates = new Set<string>();
+
+      // 先进行数据过滤
+      const filteredAccounts = this.accounts.filter(account => {
+        const lowerSearchText = this.searchText.toLowerCase();  // 将搜索文本转为小写，避免大小写问题
+        const accountDate = new Date(account.date);
+
+        // 调整为上海时间（UTC+8），即加上8小时
+        accountDate.setHours(accountDate.getHours() + 8);
+
+        // 获取格式化后的日期字符串（YYYY-MM-DD）
+        const accountDateStr = accountDate.toISOString().split('T')[0];
+
+        return (
+          account.category.toLowerCase().includes(lowerSearchText) ||      // 按类别匹配
+            (account.description && account.description.toLowerCase().includes(lowerSearchText)) || // 按描述匹配
+          account.amount.toString().includes(this.searchText) ||           // 按金额匹配
+          accountDateStr.includes(this.searchText)                         // 按日期匹配（YYYY-MM-DD）
+        );
+      });
+
+      this.accounts = filteredAccounts;
 
       for (let i = 0; i < this.accounts.length; i++) {
         if (this.accounts[i].type === 0) {
@@ -131,6 +153,7 @@ export default struct Comp_account {
             .backgroundColor(Color.White)
             .onChange((searchValue: string) => {
               this.searchText = searchValue;
+              this.recordList();
             })
         }
         .width(CommonConstants.FULL_WIDTH)
@@ -138,16 +161,6 @@ export default struct Comp_account {
         .margin({ top: ('0vp'), bottom: ('2vp') })
 
         Row() {
-          // Column() {
-          //   TextClock({ timeZoneOffset: -8, controller: this.controller })
-          //     .format('yyyy')
-          //     .fontSize(20)
-          //     .height($r('app.float.component_size_SP'))
-          //   TextClock({ timeZoneOffset: -8, controller: this.controller })
-          //     .format('MM')
-          //     .fontSize(20)
-          //     .height($r('app.float.component_size_SP'))
-          // }.margin({ left: ('12vp') })
           Column() {
             Text(`收入`)
               .height($r('app.float.component_size_SP'))
