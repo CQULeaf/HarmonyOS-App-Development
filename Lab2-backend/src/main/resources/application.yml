@@ -1,0 +1,11 @@
+host1: 127.0.0.1
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 60m
+spring:
+  profiles:
+    active: dev
+  application:
+    name: harmony-lab
