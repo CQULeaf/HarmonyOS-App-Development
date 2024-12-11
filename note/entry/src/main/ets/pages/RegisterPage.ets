@@ -1,14 +1,7 @@
 import { router } from '@kit.ArkUI'
 import { userRegister } from '../api/user'
 import CommonConstants from '../common/CommonConstants'
-
-interface ResponseUserRegister {
-  id: number;
-  username: string;
-  password: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import UserModel from '../bean/UserModel'
 
 @Entry
 @Component
@@ -20,7 +13,7 @@ struct RegisterPage {
   // 实现注册请求
   async userRegister() {
     try {
-      const res = await userRegister<ResponseUserRegister>(this.username, this.password1, this.password2)
+      const res = await userRegister<UserModel>(this.username, this.password1, this.password2)
 
       console.log('注册成功:', res)
       AlertDialog.show({

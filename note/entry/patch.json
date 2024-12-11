@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "com.example.note",
+    "patchVersionCode": 2000025,
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "entry",
+    "type": "hotreload"
+  }
+}

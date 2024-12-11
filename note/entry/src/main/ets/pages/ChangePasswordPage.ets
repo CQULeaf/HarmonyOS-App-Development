@@ -1,13 +1,6 @@
 import router from '@ohos.router'
 import { userChangePw } from '../api/user'
-
-interface ResponseUserChangePw {
-  id: number;
-  username: string;
-  password: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import UserModel from '../bean/UserModel'
 
 @Entry
 @Component
@@ -19,10 +12,10 @@ export struct ChangePwPage {
 
   async userChangePw() {
     try {
-      const res = await userChangePw<ResponseUserChangePw>(this.username, this.oldPassword, this.newPassword1, this.newPassword2)
+      const res = await userChangePw<UserModel>(this.username, this.oldPassword, this.newPassword1, this.newPassword2)
 
       console.log('修改密码成功:', res)
-      router.pushUrl({ url: 'pages/MainPage' })
+      router.pushUrl({ url: 'pages/Index' })
     } catch (error) {
       // 处理不同类型的错误，给出不同的提示
       console.error('修改密码请求错误', error)
@@ -44,17 +37,33 @@ export struct ChangePwPage {
 
   build() {
     Column() {
-      Text("修改密码")
-        .fontSize(40)
-        .fontColor('#9B0000')
-        .margin({top:'60vp',bottom:'20vp'})
+      Row() {
+        Image($r('app.media.back'))
+          .width(24)
+          .height(24)
+          .margin({ left: 15 })
+          .onClick(() => {
+            router.back()
+          })
+
+        Text('修改密码')
+          .fontSize(25)
+          .fontColor('#9B0000')
+          .margin({ left: 110 })
+
+        Blank()
+          .layoutWeight(1)
+      }
+      .justifyContent(FlexAlign.SpaceBetween)
+      .margin({ top: 10 })
+      .width('100%')
 
       TextInput({
         placeholder:"请输入您的旧密码",
       })
         .width('90%')
         .height(50)
-        .margin(10)
+        .margin({top: 50, left: 10, right: 10, bottom: 10})
         .borderRadius(25)
         .type(InputType.Normal)
         .onChange((value: string) => {
@@ -92,6 +101,9 @@ export struct ChangePwPage {
         .onClick(() => {
           this.userChangePw()
         })
-    }.width('100%').height('100%').backgroundColor($r('app.color.themeColor'))
+    }
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#F5F5F5')
   }
 }

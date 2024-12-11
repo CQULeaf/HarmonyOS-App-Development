@@ -1,3 +1,5 @@
+import NoteModel from '../bean/NoteModel'
+
 interface TimeFormat {
   range: string
   formatDate: string
@@ -34,11 +36,12 @@ function getFormatTime(timeStamp: number): TimeFormat {
   const formatTime: string = `${hours}:${minute}`
 
   return { range, formatDate, formatTime }
-
 }
 
 @Component
-export default struct MemoItem {
+export default struct NoteItem {
+  @Prop note: NoteModel
+  @Prop onNoteClick :(note:NoteModel)=>void
 
   build() {
     Row() {
@@ -46,7 +49,6 @@ export default struct MemoItem {
         Row() {
           // 左侧
           Column() {
-
           }
           .width(26)
           .height(90)
@@ -64,29 +66,29 @@ export default struct MemoItem {
 
           // 右侧
           Column() {
-            // Row({ space: 10 }) {
-            //   Text(getFormatTime(this.memo.updateTime).range)
-            //     .fontSize(12).fontColor('#BFA290')
-            //   Text(getFormatTime(this.memo.updateTime).formatDate)
-            //     .fontSize(12).fontColor('#BFA290')
-            //   Text(getFormatTime(this.memo.updateTime).formatTime)
-            //     .fontSize(12).fontColor('#BFA290')
-            // }
-            // .margin({ left: 10 })
-            // .height(25)
+            Row({ space: 10 }) {
+              Text(getFormatTime(this.note.updatedAt).range)
+                .fontSize(12).fontColor('#BFA290')
+              Text(getFormatTime(this.note.updatedAt).formatDate)
+                .fontSize(12).fontColor('#BFA290')
+              Text(getFormatTime(this.note.updatedAt).formatTime)
+                .fontSize(12).fontColor('#BFA290')
+            }
+            .margin({ left: 10 })
+            .height(25)
 
             Divider()
               .color('#EEE4DB')
 
-            // Column() {
-            //   Text(this.memo.content)
-            //     .fontColor('#604637')
-            //     .maxLines(2)
-            //     .margin({ right: 10 })
-            // }
-            // .margin({ left: 10 })
-            // .justifyContent(FlexAlign.Center)
-            // .height(64)
+            Column() {
+              Text(this.note.content)
+                .fontColor('#604637')
+                .maxLines(2)
+                .margin({ right: 10 })
+            }
+            .margin({ left: 10 })
+            .justifyContent(FlexAlign.Center)
+            .height(64)
           }
           .alignItems(HorizontalAlign.Start)
           .linearGradient({
@@ -96,26 +98,25 @@ export default struct MemoItem {
           .height(90)
           .borderRadius({ topRight: 4, bottomRight: 4 })
           .margin({ right: 27 })
-
         }
         .shadow({
-          radius:10,
-          color:"rgba(0,0,0,0.1)",
-          offsetY:4
+          radius: 10,
+          color: "rgba(0,0,0,0.1)",
+          offsetY: 4
         })
 
         Image($r('app.media.clip'))
           .height(30)
-          .offset({x:-33})
-
+          .offset({ x: -33 })
       }
       .width('100%')
       .alignContent(Alignment.Start)
-      .onClick(()=>{
+      .onClick(() => {
+        this.onNoteClick(this.note)
       })
 
     }
-    .margin({top:12})
-    .padding({left:20,right:20})
+    .margin({ top: 12 })
+    .padding({ left: 20, right: 20 })
   }
 }

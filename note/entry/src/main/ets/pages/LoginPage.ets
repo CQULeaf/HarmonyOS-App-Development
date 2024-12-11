@@ -1,14 +1,7 @@
 import { router } from '@kit.ArkUI'
 import { userLogin } from '../api/user'
 import CommonConstants from '../common/CommonConstants'
-
-interface ResponseUserLogin {
-  id: number;
-  username: string;
-  password: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import UserModel from '../bean/UserModel'
 
 @Entry
 @Component
@@ -18,7 +11,7 @@ struct LoginPage {
 
   async userLogin() {
     try {
-      const res = await userLogin<ResponseUserLogin>(this.username, this.password)
+      const res = await userLogin<UserModel>(this.username, this.password)
 
       console.log('登录成功:', res)
       AppStorage.setOrCreate('CurrentUsername', res.username)
