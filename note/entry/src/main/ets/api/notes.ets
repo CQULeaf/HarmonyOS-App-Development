@@ -1,6 +1,6 @@
 import request from '../utils/AxiosRequest'
 
-export function noteAdd<T>(username: string, title: string | null, content: string , category: string | null) {
+export function noteAdd<T>(username: string, title: string, content: string , category: string) {
   return request<T>({
     url: '/notes/add',
     method: 'post',
@@ -27,7 +27,7 @@ export function noteList<T>(username: string) {
   })
 }
 
-export function noteEdit<T>(id: number, title: string | null, content: string , category: string | null) {
+export function noteEdit<T>(id: number, title: string, content: string , category: string) {
   return request<T>({
     url: `/notes/edit/${id}`,
     method: 'put',
@@ -36,5 +36,12 @@ export function noteEdit<T>(id: number, title: string | null, content: string , 
       content,
       title
     }
+  })
+}
+
+export function getNoteById<T>(id: number) {
+  return request<T>({
+    url: `/notes/get/${id}`,
+    method: 'get'
   })
 }

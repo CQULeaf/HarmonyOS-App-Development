@@ -1,7 +1,6 @@
 import NoteModel from '../bean/NoteModel'
 import { noteAdd } from '../api/notes'
 import { router } from '@kit.ArkUI'
-import CommonConstants from '../common/CommonConstants'
 
 @Entry
 @Component
@@ -11,33 +10,33 @@ struct AddNotePage {
   @State addTitle: string = ''
   @State addContent: string = ''
   @State selectedCategory: string = ''
-
   // 操作历史
-  undoStack: string[] = []
-  redoStack: string[] = []
+  @State undoStack: string[] = []
+  @State redoStack: string[] = []
+
+  formatTimestamp(timestamp: number): string {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+  }
 
   // 保存当前状态到撤销栈
   saveStateBeforeChange(newContent: string) {
-    // 如果有新的内容，保存当前内容到撤销栈
     if (newContent !== this.addContent) {
       this.undoStack.push(this.addContent)
       this.addContent = newContent
-      // 清空前撤栈
       this.redoStack = []
     }
   }
 
-  get canUndo() {
-    return this.undoStack.length > 0;
-  }
-
-  get canRedo() {
-    return this.redoStack.length > 0;
-  }
-
   // 后撤操作
   undo() {
-    if (this.canUndo) {
+    if (this.undoStack.length > 0) {
       // 从操作栈中取出最后一个操作，恢复内容
       const lastState = this.undoStack.pop()
       if (lastState !== undefined) {
@@ -51,7 +50,7 @@ struct AddNotePage {
 
   // 前撤操作
   redo() {
-    if (this.canRedo) {
+    if (this.redoStack.length > 0) {
       // 从撤销栈中取出最后一个撤销的操作，恢复内容
       const redoState = this.redoStack.pop()
       if (redoState !== undefined) {
@@ -66,22 +65,21 @@ struct AddNotePage {
   // 添加笔记
   async noteAdd() {
     try {
-      const res = await noteAdd<NoteModel>(this.username, this.addTitle, this.addContent, this.selectedCategory)
-      console.log('添加成功:', res)
-      AlertDialog.show({
-        message: '笔记添加成功！'
-      })
-      router.pushUrl({ url: 'pages/Index' })
-    } catch (error) {
-      if (this.addContent.trim() === '') {
+      if (this.addContent.trim() === '' || this.addTitle.trim() === '') {
         AlertDialog.show({
-          message: '内容不能为空~'
+          message: '标题或笔记都不能为空哦~'
         })
       } else {
+        const res = await noteAdd<NoteModel>(this.username, this.addTitle, this.addContent, this.selectedCategory)
         AlertDialog.show({
-          message: '添加失败，请检查网络连接或稍后重试'
+          message: '笔记添加成功！'
         })
+        router.pushUrl({ url: 'pages/Index' })
       }
+    } catch (error) {
+      AlertDialog.show({
+        message: '添加失败，请检查网络连接或稍后重试'
+      })
     }
   }
 
@@ -100,30 +98,28 @@ struct AddNotePage {
           })
 
         // 后撤按钮
-        Image(this.canUndo ? $r('app.media.undo') : $r('app.media.undo_disabled'))
+        Image(this.undoStack.length > 0 ? $r('app.media.undo') : $r('app.media.undo_disabled'))
           .width(24)
           .height(24)
           .margin({ left: 100 })
           .onClick(() => {
-            if (this.canUndo) {
+            if (this.undoStack.length > 0) {
               this.undo();
             }
           })
-          .opacity(this.canUndo ? 1 : 0.5)
-          .enabled(this.canUndo)
+          .opacity(this.undoStack.length > 0 ? 1 : 0.5)
 
         // 前撤按钮
-        Image(this.canRedo ? $r('app.media.redo') : $r('app.media.redo_disabled'))
+        Image(this.redoStack.length > 0 ? $r('app.media.redo') : $r('app.media.redo_disabled'))
           .width(24)
           .height(24)
           .margin({ right: 100 })
           .onClick(() => {
-            if (this.canRedo) {
+            if (this.redoStack.length > 0) {
               this.redo();
             }
           })
-          .opacity(this.canRedo ? 1 : 0.5)
-          .enabled(this.canRedo)
+          .opacity(this.redoStack.length > 0 ? 1 : 0.5)
 
         // 保存按钮
         Image($r('app.media.save'))
@@ -154,7 +150,7 @@ struct AddNotePage {
       // 显示记录时间部分
       Row() {
         // 时间显示
-        Text(new Date().toLocaleString())
+        Text(this.formatTimestamp(Date.now()))
           .fontSize(16)
           .fontColor('#397D54')
           .margin({ left: 20 })
@@ -169,12 +165,18 @@ struct AddNotePage {
         text: this.addContent
       })
         .onChange((value: string) => {
-          this.addContent = value
+          this.saveStateBeforeChange(value)
         })
         .height('70%')
         .margin(20)
         .backgroundColor('#fff')
         .padding(10)
+
+      // 展示正文字数
+      Text(`字数：${this.addContent.length}`)
+        .fontSize(20)
+        .fontColor('#397D54')
+        .margin({ bottom: 10 })
     }
     .width('100%')
     .height('100%')

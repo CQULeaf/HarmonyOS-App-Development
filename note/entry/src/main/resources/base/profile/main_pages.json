@@ -4,7 +4,8 @@
     "pages/LoginPage",
     "pages/RegisterPage",
     "pages/ChangePasswordPage",
-    "pages/NotePage",
-    "pages/SettingPage"
+    "pages/AddNotePage",
+    "pages/SettingPage",
+    "pages/EditNotePage"
   ]
 }
