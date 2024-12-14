@@ -6,5 +6,7 @@ export default interface NoteModel {
   category: string
   createdAt: number
   updatedAt: number
-  is_deleted: boolean
+  isDeleted: boolean
+  isTop: boolean
+  isFavorite: boolean
 }

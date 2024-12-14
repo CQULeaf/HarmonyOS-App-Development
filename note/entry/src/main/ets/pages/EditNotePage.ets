@@ -1,5 +1,5 @@
 import NoteModel from '../bean/NoteModel'
-import { noteEdit, getNoteById } from '../api/notes'
+import { noteEdit, getNoteById, noteDelete, noteFavorite } from '../api/notes'
 import { router } from '@kit.ArkUI'
 
 @Entry
@@ -17,7 +17,9 @@ struct EditNotePage {
     category: '',
     createdAt: 0,
     updatedAt: 0,
-    is_deleted: false,
+    isDeleted: false,
+    isTop: false,
+    isFavorite: false
   }
 
   formatTimestamp(timestamp: number): string {
@@ -55,6 +57,15 @@ struct EditNotePage {
       router.pushUrl({ url: 'pages/Index' });
     } catch (error) {
       console.error('更新笔记请求错误', error)
+    }
+  }
+
+  async noteDelete(id: number) {
+    try {
+      const response = await noteDelete<number>(id);
+      console.log('删除成功:', response);
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -192,11 +203,36 @@ struct EditNotePage {
         .backgroundColor('#fff')
         .padding(10)
 
-      // 展示正文字数
-      Text(`字数：${this.editContent.length}`)
-        .fontSize(20)
-        .fontColor('#397D54')
-        .margin({ bottom: 10 })
+      // 收藏与删除按钮
+      Row() {
+        // 收藏按钮
+        Image($r('app.media.favorite'))
+          .width(30)
+          .height(30)// .backgroundColor('#147D42')
+          .borderRadius(12)
+          .margin({ left: 40 })
+          .onClick(() => {
+            console.log('收藏')
+          })
+
+        // 展示正文字数
+        Text(`字数：${this.editContent.length}`)
+          .fontSize(20)
+          .fontColor('#397D54')
+
+        // 删除按钮
+        Image($r('app.media.delete'))
+          .width(30)
+          .height(30)// .backgroundColor('#147D42')
+          .borderRadius(12)
+          .margin({ right: 40 })
+          .onClick(() => {
+            this.noteDelete(this.note.noteId);
+            router.pushUrl({ url: 'pages/Index' });
+          })
+      }
+      .justifyContent(FlexAlign.SpaceBetween)
+      .width('100%')
     }
     .width('100%')
     .height('100%')

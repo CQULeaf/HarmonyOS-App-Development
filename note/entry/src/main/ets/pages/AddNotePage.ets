@@ -2,11 +2,16 @@ import NoteModel from '../bean/NoteModel'
 import { noteAdd } from '../api/notes'
 import { router } from '@kit.ArkUI'
 
+interface SelectOption {
+  value: string
+  icon: Resource
+}
+
 @Entry
 @Component
 struct AddNotePage {
   @StorageProp('CurrentUsername') username: string = '';
-  @StorageProp('categoryList') categoryList: string[] = [];
+  @StorageProp('CategoryArray') categoryArray: string[] = []
   @State addTitle: string = ''
   @State addContent: string = ''
   @State selectedCategory: string = ''
@@ -83,6 +88,10 @@ struct AddNotePage {
     }
   }
 
+  selectOptions: SelectOption[] = this.categoryArray.map((category) => {
+    return { value: category, icon: $r('app.media.file') } as SelectOption
+  })
+
   build() {
     // 编辑卡片
     Column() {
@@ -154,6 +163,22 @@ struct AddNotePage {
           .fontSize(16)
           .fontColor('#397D54')
           .margin({ left: 20 })
+
+        // 分类选择
+        Select(
+          this.selectOptions
+        )
+          .margin({ right: 30 })
+          .value(this.selectedCategory)
+          .font({ size: 16})
+          .fontColor('#397D54')
+          .selectedOptionFont({ size: 16, weight: 400 })
+          .selectedOptionBgColor('#44bcf9')
+          .selectedOptionFontColor('#397D54')
+          .optionFont({ size: 16, weight: 400 })
+          .onSelect((index: number) => {
+            this.selectedCategory = this.categoryArray[index]
+          })
       }
       .justifyContent(FlexAlign.SpaceBetween)
       .margin({ top: 10 })

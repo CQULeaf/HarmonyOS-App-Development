@@ -1,5 +1,5 @@
 import NoteModel from '../bean/NoteModel'
-import { noteList, noteDelete } from '../api/notes'
+import { noteList, noteDelete, noteTop, noteFavorite } from '../api/notes'
 import { router } from '@kit.ArkUI'
 import CommonConstants from '../common/CommonConstants'
 
@@ -35,6 +35,8 @@ struct Index {
       const response = await noteList<ResponseNoteList>(this.username);
       this.noteList = response;
 
+      this.noteList.sort((a, b) => (b.isTop ? 1 : 0) - (a.isTop ? 1 : 0));
+
       const filteredNotes = this.noteList.filter((note) => {
         const lowerSearchText = this.searchText.toLowerCase();
 
@@ -48,12 +50,12 @@ struct Index {
 
       this.noteList = filteredNotes;
 
-      // // 获取用户所有的分类
-      // const categorySet = new Set<string>();
-      // this.noteList.forEach((note) => {
-      //   categorySet.add(note.category);
-      // });
-      // AppStorage.setOrCreate('categoryList', Array.from(categorySet));
+      // 获取用户所有的分类
+      const categorySet = new Set<string>();
+      this.noteList.forEach((note) => {
+        categorySet.add(note.category);
+      });
+      AppStorage.setOrCreate('CategoryArray', Array.from(categorySet));
     } catch (error) {
       console.log(error);
     }
@@ -61,8 +63,26 @@ struct Index {
 
   async noteDelete(id: number) {
     try {
-      const response = await noteDelete<ResponseNoteList>(id);
+      const response = await noteDelete<number>(id);
       console.log('删除成功:', response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async NoteTop(id: number, isTop: boolean) {
+    try {
+      const response = await noteTop<NoteModel>(id, isTop);
+      console.log('置顶成功:', response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async NoteFavorite(id: number, isFavorite: boolean) {
+    try {
+      const response = await noteFavorite<NoteModel>(id, isFavorite);
+      console.log('收藏成功:', response);
     } catch (error) {
       console.log(error);
     }
@@ -75,7 +95,6 @@ struct Index {
 
   @Builder itemEnd(index: number, item: NoteModel) {
     // 侧滑后尾端出现的四个组件：置顶、分类、收藏、删除
-
     Row() {
       // 置顶按钮
       Button({ type: ButtonType.Circle }) {
@@ -86,8 +105,8 @@ struct Index {
       .backgroundColor('#73C088')
       .margin({ left: 5, right: 5 })
       .onClick(() => {
-        // this.setTop(item.id);
-        // this.recordList(); // 刷新列表
+        this.NoteTop(item.noteId, !item.isTop);
+        this.getNoteList();
       })
 
       // 分类按钮
@@ -111,8 +130,8 @@ struct Index {
       .backgroundColor('#73C088')
       .margin({ left: 5, right: 5 })
       .onClick(() => {
-        // this.toggleFavorite(item.id); // 切换收藏状态
-        // this.recordList(); // 刷新列表
+        this.NoteFavorite(item.noteId, !item.isFavorite);
+        this.getNoteList();
       })
 
       // 删除按钮
@@ -195,6 +214,15 @@ struct Index {
               ListItem() {
                 Column() {
                   Row() {
+                    if (note.isTop) {
+                      Column() {
+                        Image($r('app.media.top'))
+                          .width(20)
+                          .height(20)
+                      }
+                      .margin({ left: 10 })
+                    }
+
                     Column() {
                       Text(this.formatTimestamp(note.updatedAt))
                         .fontSize(15)
@@ -222,6 +250,7 @@ struct Index {
                         .fontWeight(FontWeight.Bold)
                         .fontColor('#000000')
                         .margin({ top: 5, bottom: 5, left: 5 })
+                        .maxLines(1)
 
                       // 笔记内容（最多显示2行）
                       Text(note.content)

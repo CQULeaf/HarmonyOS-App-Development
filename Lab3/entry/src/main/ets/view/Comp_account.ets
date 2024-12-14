@@ -22,17 +22,13 @@ interface AccountData {
 @Component
 export default struct Comp_account {
   @StorageProp('CurrentUsername') username: string = '';
-
   @State total_out: number = 0;
   @State total_in: number = 0;
   @State totalCount: number = 0;
   @State totalDays: number = 0;
-
   @State searchText: string = '';
-
   @State index: number = -1;
   @State accounts: Array<AccountData> = [];
-
   controller: TextClockController = new TextClockController();
   searchController: SearchController = new SearchController();
   private scrollerForList: Scroller = new Scroller()
@@ -60,7 +56,7 @@ export default struct Comp_account {
 
       // 先进行数据过滤
       const filteredAccounts = this.accounts.filter(account => {
-        const lowerSearchText = this.searchText.toLowerCase();  // 将搜索文本转为小写，避免大小写问题
+        const lowerSearchText = this.searchText.toLowerCase(); // 将搜索文本转为小写，避免大小写问题
         const accountDate = new Date(account.date);
 
         // 调整为上海时间（UTC+8），即加上8小时
@@ -70,9 +66,9 @@ export default struct Comp_account {
         const accountDateStr = accountDate.toISOString().split('T')[0];
 
         return (
-          account.category.toLowerCase().includes(lowerSearchText) ||      // 按类别匹配
+          account.category.toLowerCase().includes(lowerSearchText) || // 按类别匹配
             (account.description && account.description.toLowerCase().includes(lowerSearchText)) || // 按描述匹配
-          account.amount.toString().includes(this.searchText) ||           // 按金额匹配
+          account.amount.toString().includes(this.searchText) || // 按金额匹配
           accountDateStr.includes(this.searchText)                         // 按日期匹配（YYYY-MM-DD）
         );
       });
@@ -114,7 +110,8 @@ export default struct Comp_account {
     this.recordList();
   }
 
-  @Builder itemEnd(index: number, item: AccountData) {
+  @Builder
+  itemEnd(index: number, item: AccountData) {
     // 侧滑后尾端出现的组件
     Button({ type: ButtonType.Circle }) {
       Image($rawfile('delete.png'))
@@ -127,15 +124,16 @@ export default struct Comp_account {
       this.recordList();
     })
   }
+
   build() {
     Stack() {
       Column() {
-        Row(){
+        Row() {
           Text(`Money Up`)
             .height(`30vp`)
             .fontSize(25)
             .fontColor('#9B0000')
-            .margin({top:'10vp', left:140})
+            .margin({ top: '10vp', left: 140 })
         }.width('100%')
 
         Row() {
@@ -170,6 +168,7 @@ export default struct Comp_account {
               .fontSize(20)
               .fontColor('#9B0000')
           }.margin({ right: ('8vp') })
+
           Column() {
             Text(`支出`)
               .height($r('app.float.component_size_SP'))
@@ -179,6 +178,7 @@ export default struct Comp_account {
               .fontSize(20)
               .fontColor('#3E4A7B')
           }.margin({ right: ('12vp') })
+
           Column() {
             Text(`结余`)
               .height($r('app.float.component_size_SP'))
@@ -191,7 +191,7 @@ export default struct Comp_account {
         }
         .width(CommonConstants.FULL_WIDTH)
         .justifyContent(FlexAlign.SpaceAround)
-        .margin({ top:('5vp'), bottom: ('0vp') })
+        .margin({ top: ('5vp'), bottom: ('0vp') })
 
         Row() {
           List({ space: CommonConstants.FULL_SIZE, scroller: this.scrollerForList }) {
@@ -204,20 +204,21 @@ export default struct Comp_account {
                     .margin({ right: $r('app.float.edge_size_MP') })
 
                   Column() {
-                    Row({space:8}){
+                    Row({ space: 8 }) {
                       Text(item.category)
                         .height($r('app.float.component_size_SM'))
                         .fontSize($r('app.float.font_size_M'))
-                      if(item.description === ''){
+                      if (item.description === '') {
                         Text(`备注: 无`)
                           .height($r('app.float.component_size_SM'))
                           .fontSize($r('app.float.font_size_M'))
-                      }else{
+                      } else {
                         Text(`备注: ${item.description}`)
                           .height($r('app.float.component_size_SM'))
                           .fontSize($r('app.float.font_size_M'))
                       }
                     }
+
                     Text(new Date(item.date).toLocaleDateString())
                       .height($r('app.float.component_size_SM'))
                       .fontSize($r('app.float.font_size_M'))
@@ -234,9 +235,11 @@ export default struct Comp_account {
                 }
                 .width(CommonConstants.FULL_WIDTH)
                 .padding({ left: $r('app.float.edge_size_M'), right: $r('app.float.edge_size_M') })
-              }.swipeAction({ end: () => {
-                this.itemEnd(this.index, item)
-              } }) // 设置侧滑属性.
+              }.swipeAction({
+                end: () => {
+                  this.itemEnd(this.index, item)
+                }
+              })
               .width(CommonConstants.FULL_WIDTH)
               .height($r('app.float.component_size_LM'))
               .onClick(() => {
@@ -256,7 +259,7 @@ export default struct Comp_account {
         }
         .width(CommonConstants.FULL_WIDTH)
         .padding({ left: $r('app.float.edge_size_M'), right: $r('app.float.edge_size_M') })
-        .margin({ top:'2vp' })
+        .margin({ top: '2vp' })
       }
       .width(CommonConstants.FULL_WIDTH)
       .height(CommonConstants.FULL_HEIGHT)

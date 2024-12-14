@@ -45,3 +45,23 @@ export function getNoteById<T>(id: number) {
     method: 'get'
   })
 }
+
+export function noteTop<T>(id: number, isTop: boolean) {
+  return request<T>({
+    url: `/notes/top/${id}`,
+    method: 'put',
+    params: {
+      isTop
+    }
+  })
+}
+
+export function noteFavorite<T>(id: number, isFavorite: boolean) {
+  return request<T>({
+    url: `/notes/favorite/${id}`,
+    method: 'put',
+    params: {
+      isFavorite
+    }
+  })
+}
