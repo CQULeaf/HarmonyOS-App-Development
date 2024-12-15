@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yexuhang.moneyup.mapper.RecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yexuhang.moneyup.bean.Record">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="category" property="category" />
+        <result column="amount" property="amount" />
+        <result column="description" property="description" />
+        <result column="created_at" property="createdAt" />
+        <result column="date" property="date" />
+        <result column="type" property="type" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, username, category, amount, description, created_at, date, type
+    </sql>
+
+</mapper>

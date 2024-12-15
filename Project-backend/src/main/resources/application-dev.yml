@@ -1,0 +1,23 @@
+spring:
+  jackson:
+    time-zone: Asia/Shanghai
+  #MySQL配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${host1}:3306/note?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+logging:
+  level:
+    root: info
+    com:
+      yexuhang:
+        note:
+          mapper: debug

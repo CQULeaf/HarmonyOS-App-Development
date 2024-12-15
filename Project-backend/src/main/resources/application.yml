@@ -1,0 +1,13 @@
+host1: 127.0.0.1
+#host2: 192.168.237.182
+#host3: 47.120.1.65
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 60m
+spring:
+  profiles:
+    active: dev
+  application:
+    name: note

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yexuhang.note.mapper.NotesMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yexuhang.note.bean.Notes">
+        <id column="note_id" property="noteId" />
+        <result column="username" property="username" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="category" property="category" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="is_top" property="isTop" />
+        <result column="is_favorite" property="isFavorite" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        note_id, username, title, content, category, created_at, updated_at, is_deleted, is_top, is_favorite
+    </sql>
+
+</mapper>
