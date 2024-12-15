@@ -27,14 +27,35 @@ export function noteList<T>(username: string) {
   })
 }
 
-export function noteEdit<T>(id: number, title: string, content: string , category: string) {
+export function noteDeletedList<T>(username: string) {
+  return request<T>({
+    url: `/notes/deleted/${username}`,
+    method: 'get'
+  })
+}
+
+export function noteRecover<T>(id: number) {
+  return request<T>({
+    url: `/notes/recover/${id}`,
+    method: 'put'
+  })
+}
+
+export function noteDeletePermanently<T>(id: number) {
+  return request<T>({
+    url: `/notes/deletePermanently/${id}`,
+    method: 'delete'
+  })
+}
+
+export function noteEdit<T>(id: number, title: string, content: string, category: string) {
   return request<T>({
     url: `/notes/edit/${id}`,
     method: 'put',
     data: {
-      category,
       content,
-      title
+      title,
+      category
     }
   })
 }
@@ -62,6 +83,16 @@ export function noteFavorite<T>(id: number, isFavorite: boolean) {
     method: 'put',
     params: {
       isFavorite
+    }
+  })
+}
+
+export function noteCategory<T>(id: number, category: string) {
+  return request<T>({
+    url: `/notes/category/${id}`,
+    method: 'put',
+    params: {
+      category
     }
   })
 }

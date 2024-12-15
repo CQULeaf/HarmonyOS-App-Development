@@ -1,5 +1,5 @@
 import NoteModel from '../bean/NoteModel'
-import { noteAdd } from '../api/notes'
+import { noteAdd, noteCategory } from '../api/notes'
 import { router } from '@kit.ArkUI'
 
 interface SelectOption {
@@ -14,7 +14,7 @@ struct AddNotePage {
   @StorageProp('CategoryArray') categoryArray: string[] = []
   @State addTitle: string = ''
   @State addContent: string = ''
-  @State selectedCategory: string = ''
+  @State selectedCategory: string = '请先选择分类'
   // 操作历史
   @State undoStack: string[] = []
   @State redoStack: string[] = []
@@ -88,9 +88,11 @@ struct AddNotePage {
     }
   }
 
-  selectOptions: SelectOption[] = this.categoryArray.map((category) => {
-    return { value: category, icon: $r('app.media.file') } as SelectOption
-  })
+  selectOptions: SelectOption[] = [
+    ...this.categoryArray.map((category) => {
+      return { value: category, icon: $r('app.media.file') } as SelectOption;
+    })
+  ];
 
   build() {
     // 编辑卡片

@@ -92,9 +92,21 @@ struct LoginPage {
             console.log('注册')
             router.pushUrl({ url: 'pages/RegisterPage' })
           })
+        Button('离线模式')
+          .width(300)
+          .height(48)
+          .backgroundColor('#A3A3A3')
+          .fontSize(16)
+          .fontColor('#FFFFFF')
+          .margin({ bottom: 16 })
+          .onClick(() => {
+            console.log('离线模式')
+            AppStorage.setOrCreate('CurrentUsername', 'offline')
+            router.pushUrl({ url: 'pages/Index' })
+          })
       }
       .width('90%')
-      .height('50%')
+      .height('60%')
       .padding({ left: 10, right: 10 })
       .borderRadius(10)
       .shadow({

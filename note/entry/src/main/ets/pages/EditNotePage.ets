@@ -1,10 +1,17 @@
 import NoteModel from '../bean/NoteModel'
-import { noteEdit, getNoteById, noteDelete, noteFavorite } from '../api/notes'
+import { noteEdit, getNoteById, noteDelete, noteFavorite, noteCategory } from '../api/notes'
 import { router } from '@kit.ArkUI'
+import { NewCategoryDialog } from '../utils/NewCategoryDialog'
+
+interface SelectOption {
+  value: string
+  icon: Resource
+}
 
 @Entry
 @Component
 struct EditNotePage {
+  @StorageProp('CategoryArray') categoryArray: string[] = []
   @State noteId: number = 0;
   @State editTitle: string = '';
   @State editContent: string = '';
@@ -45,6 +52,7 @@ struct EditNotePage {
       this.undoStack = [this.note.content];
       this.editContent = this.note.content;
       this.editTitle = this.note.title;
+      this.selectedCategory = this.note.category;
     } catch (error) {
       console.error('获取笔记详情请求错误', error)
     }
@@ -57,6 +65,15 @@ struct EditNotePage {
       router.pushUrl({ url: 'pages/Index' });
     } catch (error) {
       console.error('更新笔记请求错误', error)
+    }
+  }
+
+  async NoteFavorite(id: number, isFavorite: boolean) {
+    try {
+      const response = await noteFavorite<NoteModel>(id, isFavorite);
+      console.log('收藏成功:', response);
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -116,6 +133,34 @@ struct EditNotePage {
       console.log('没有更多操作可以前撤')
     }
   }
+
+  selectOptions: SelectOption[] = [
+    ...this.categoryArray.map((category) => {
+      return { value: category, icon: $r('app.media.file') } as SelectOption;
+    }),
+    { value: '新建分类', icon: $r('app.media.add_file') }
+  ];
+
+  async NoteCategory(id: number, category: string) {
+    try {
+      const response = await noteCategory<NoteModel>(id, category);
+      console.log('分类成功:', response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  NewCategoryDialog: CustomDialogController = new CustomDialogController({
+    builder: NewCategoryDialog({
+      confirm: (value) => {
+        this.selectedCategory = value;
+        // 调用新建分类接口函数
+        this.NoteCategory(this.note.noteId, value);
+      },
+    }),
+    alignment: DialogAlignment.Center,
+    offset: { dx: 0, dy: 0 }
+  });
 
   build() {
     Column() {
@@ -185,6 +230,29 @@ struct EditNotePage {
           .fontSize(16)
           .fontColor('#397D54')
           .margin({ left: 20 })
+
+        // 分类选择
+        Select(
+          this.selectOptions
+        )
+          .selected(this.categoryArray.indexOf(this.selectedCategory))
+          .margin({ right: 30 })
+          .value(this.selectedCategory)
+          .font({ size: 16})
+          .fontColor('#397D54')
+          .selectedOptionFont({ size: 16, weight: 400 })
+          .selectedOptionBgColor('#44bcf9')
+          .selectedOptionFontColor('#397D54')
+          .optionFont({ size: 16, weight: 400 })
+          .onSelect((index: number) => {
+            if (this.selectOptions[index].value === '新建分类') {
+              this.NewCategoryDialog.open();
+            } else if(this.selectOptions[index].value === '未分类') {
+              this.selectedCategory = '未分类';
+            } else {
+              this.selectedCategory = this.categoryArray[index];
+            }
+          })
       }
       .justifyContent(FlexAlign.SpaceBetween)
       .margin({ top: 10 })
@@ -211,8 +279,9 @@ struct EditNotePage {
           .height(30)// .backgroundColor('#147D42')
           .borderRadius(12)
           .margin({ left: 40 })
-          .onClick(() => {
-            console.log('收藏')
+          .onClick(async () => {
+            await this.NoteFavorite(this.note.noteId, !this.note.isFavorite);
+            router.pushUrl({ url: 'pages/Index' });
           })
 
         // 展示正文字数
@@ -226,8 +295,8 @@ struct EditNotePage {
           .height(30)// .backgroundColor('#147D42')
           .borderRadius(12)
           .margin({ right: 40 })
-          .onClick(() => {
-            this.noteDelete(this.note.noteId);
+          .onClick(async () => {
+            await this.noteDelete(this.note.noteId);
             router.pushUrl({ url: 'pages/Index' });
           })
       }

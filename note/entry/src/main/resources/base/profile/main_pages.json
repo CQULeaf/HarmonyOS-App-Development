@@ -6,6 +6,7 @@
     "pages/ChangePasswordPage",
     "pages/AddNotePage",
     "pages/SettingPage",
-    "pages/EditNotePage"
+    "pages/EditNotePage",
+    "pages/RecycleBinPage"
   ]
 }

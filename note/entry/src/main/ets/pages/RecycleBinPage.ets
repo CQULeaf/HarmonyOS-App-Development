@@ -1,5 +1,5 @@
 import NoteModel from '../bean/NoteModel'
-import { noteList, noteDelete, noteTop, noteFavorite, noteCategory } from '../api/notes'
+import { noteDeletedList, noteDeletePermanently, noteRecover } from '../api/notes'
 import { router } from '@kit.ArkUI'
 import CommonConstants from '../common/CommonConstants'
 
@@ -33,18 +33,15 @@ struct Index {
     return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
   }
 
-  async getNoteList() {
+  async getNoteDeletedList() {
     try {
-      const response = await noteList<ResponseNoteList>(this.username);
+      const response = await noteDeletedList<ResponseNoteList>(this.username);
       this.noteList = response;
 
       this.noteList.sort((a, b) => {
         const timeA = new Date(a.updatedAt).getTime();
         const timeB = new Date(b.updatedAt).getTime();
 
-        if (b.isTop !== a.isTop) {
-          return b.isTop ? 1 : -1;
-        }
         return timeB - timeA;
       });
 
@@ -60,59 +57,22 @@ struct Index {
       });
 
       this.noteList = filteredNotes;
-
-      // 获取用户所有的分类
-      const categorySet = new Set<string>();
-      this.noteList.forEach((note) => {
-        categorySet.add(note.category);
-      });
-      this.categoryArray = Array.from(categorySet).sort((a, b) => a.length - b.length);
-      AppStorage.setOrCreate('CategoryArray', this.categoryArray);
-
-      this.selectOptions = [
-        { value: '全部笔记', icon: $r('app.media.all_note') },
-        ...this.categoryArray.map((category) => {
-          return { value: category, icon: $r('app.media.file') } as SelectOption;
-        }),
-        { value: '我的收藏', icon: $r('app.media.my_favorite') },
-        { value: '回收站', icon: $r('app.media.my_delete') }
-      ];
     } catch (error) {
       console.log(error);
     }
   }
 
-  async noteDelete(id: number) {
+  async recoverNote (noteId: number) {
     try {
-      const response = await noteDelete<number>(id);
-      console.log('删除成功:', response);
+      await noteRecover<NoteModel>(noteId);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async NoteTop(id: number, isTop: boolean) {
+  async deleteNotePermanently (noteId: number) {
     try {
-      const response = await noteTop<NoteModel>(id, isTop);
-      console.log('置顶成功:', response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async NoteFavorite(id: number, isFavorite: boolean) {
-    try {
-      const response = await noteFavorite<NoteModel>(id, isFavorite);
-      console.log('收藏成功:', response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async NoteCategory(id: number, category: string) {
-    try {
-      const response = await noteCategory<NoteModel>(id, category);
-      console.log('分类成功:', response);
+      await noteDeletePermanently<NoteModel>(noteId);
     } catch (error) {
       console.log(error);
     }
@@ -120,15 +80,14 @@ struct Index {
 
   // 页面初始化前向页面加载数据
   aboutToAppear() {
-    this.getNoteList()
+    this.getNoteDeletedList()
   }
 
   @Builder itemEnd(index: number, item: NoteModel) {
-    // 侧滑后尾端出现的四个组件：置顶、分类、收藏、删除
     Row() {
-      // 置顶按钮
+      // 恢复按钮
       Button({ type: ButtonType.Circle }) {
-        Image($r('app.media.top'))
+        Image($r('app.media.recovery'))
       }
       .width('48vp')
       .height('48vp')
@@ -136,48 +95,11 @@ struct Index {
       .margin({ left: 5, right: 5 })
       .onClick(async () => {
         try {
-          await this.NoteTop(item.noteId, !item.isTop);
+          await this.recoverNote(item.noteId);
           this.aboutToAppear();
-        } catch (error) {
-          console.log(error);
-        }
-      });
-
-      // 分类按钮
-      Button({ type: ButtonType.Circle }) {
-        Image($r('app.media.category'))
-      }
-      .width('48vp')
-      .height('48vp')
-      .backgroundColor('#73C088')
-      .margin({ left: 5, right: 5 })
-      .onClick(() => {
-        TextPickerDialog.show({
-          range: this.categoryArray,
-          selected: this.categoryArray.indexOf(item.category),
-          onAccept: async (selectedCategory: TextPickerResult) => {
-            const selectedCategoryValue = Array.isArray(selectedCategory.value) ? selectedCategory.value[0] : selectedCategory.value;
-            await this.NoteCategory(item.noteId, selectedCategoryValue);
-            this.aboutToAppear();
-          },
-          onCancel: () => {
-            console.log('没有更多操作可以前撤')
-          }
-        })
-      });
-
-      // 收藏按钮
-      Button({ type: ButtonType.Circle }) {
-        Image($r('app.media.favorite'))
-      }
-      .width('48vp')
-      .height('48vp')
-      .backgroundColor('#73C088')
-      .margin({ left: 5, right: 5 })
-      .onClick(async () => {
-        try {
-          await this.NoteFavorite(item.noteId, !item.isFavorite);
-          this.aboutToAppear();
+          router.pushUrl({
+            url: 'pages/Index'
+          });
         } catch (error) {
           console.log(error);
         }
@@ -185,7 +107,7 @@ struct Index {
 
       // 删除按钮
       Button({ type: ButtonType.Circle }) {
-        Image($r('app.media.delete'))
+        Image($r('app.media.delete_forever'))
       }
       .width('48vp')
       .height('48vp')
@@ -193,17 +115,16 @@ struct Index {
       .margin({ left: 5, right: 5 })
       .onClick(async () => {
         try {
-          await this.noteDelete(item.noteId);
+          await this.deleteNotePermanently(item.noteId);
           this.aboutToAppear();
         } catch (error) {
           console.log(error);
         }
       });
     }
-    .width('63%')
+    .width('35%')
     .height('50%')
   }
-
 
   build() {
     Stack() {
@@ -216,50 +137,21 @@ struct Index {
       // 主体页面
       Column() {
         Row() {
-          Image($r('app.media.setting'))
-            .width(30)
-            .height(30)
-            .margin({ left: 15, right: 15 })
+          Image($r('app.media.back'))
+            .width(24)
+            .height(24)
+            .margin({ left: 15 })
             .onClick(() => {
-              router.pushUrl({ url: 'pages/SettingPage' })
+              router.back()
             })
 
-          Select(
-            this.selectOptions
-          )
-            .selected(0)
-            .value('全部笔记')
-            .font({ size: 16 })
-            .fontColor('#397D54')
-            .selectedOptionFont({ size: 16, weight: 400 })
-            .selectedOptionBgColor('#44bcf9')
-            .selectedOptionFontColor('#397D54')
-            .optionFont({ size: 16, weight: 400 })
-            .onSelect(async (index: number) => {  // 改为异步函数
-              const selectedValue = this.selectOptions[index].value;
+          Text('回收站')
+            .fontSize(25)
+            .fontColor('#9B0000')
+            .margin({ left: 120 })
 
-              try {
-                if (selectedValue === '全部笔记') {
-                  await this.getNoteList();
-                } else if (selectedValue === '我的收藏') {
-                  this.noteList = this.noteList.filter((note) => note.isFavorite);
-                } else if (selectedValue === '回收站') {
-                  router.pushUrl({ url: 'pages/RecycleBinPage' });
-                } else {
-                  this.noteList = this.noteList.filter((note) => note.category === selectedValue);
-                }
-              } catch (error) {
-                console.log('Error selecting note category:', error);
-              }
-            });
-
-          Image($r('app.media.add'))
-            .width(30)
-            .height(30)
-            .margin({ left: 15, right: 15 })
-            .onClick(() => {
-              router.pushUrl({ url: 'pages/AddNotePage' })
-            })
+          Blank()
+            .layoutWeight(1)
         }
         .justifyContent(FlexAlign.SpaceBetween)
         .margin({ top: 10 })
@@ -278,7 +170,7 @@ struct Index {
             .backgroundColor(Color.White)
             .onChange((searchValue: string) => {
               this.searchText = searchValue;
-              this.getNoteList();
+              this.getNoteDeletedList();
             })
         }
         .width('100%')
@@ -291,24 +183,6 @@ struct Index {
               ListItem() {
                 Column() {
                   Row() {
-                    if (note.isTop) {
-                      Column() {
-                        Image($r('app.media.top'))
-                          .width(20)
-                          .height(20)
-                      }
-                      .margin({ left: 10 })
-                    }
-
-                    if (note.isFavorite) {
-                      Column() {
-                        Image($r('app.media.favorite'))
-                          .width(20)
-                          .height(20)
-                      }
-                      .margin({ left: 5 })
-                    }
-
                     Column() {
                       Text(this.formatTimestamp(note.updatedAt))
                         .fontSize(15)
@@ -366,7 +240,7 @@ struct Index {
                 })
               })
               .swipeAction({ end: () => {
-                  this.itemEnd(this.index, note)
+                this.itemEnd(this.index, note)
               }  })
               .width(CommonConstants.FULL_WIDTH)
               .height('110vp')
@@ -385,7 +259,6 @@ struct Index {
         .width(CommonConstants.FULL_WIDTH)
         .padding({ left: '12vp', right: '12vp' })
         .margin({ top: '2vp' })
-
       }
       .width('100%')
       .height('100%')
